@@ -49,7 +49,7 @@ public class Gabinete extends javax.swing.JFrame {
         cbPlacaMae = new javax.swing.JComboBox<>();
         btMontar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         panelProcessador.setBackground(new java.awt.Color(102, 102, 102));
         panelProcessador.setForeground(new java.awt.Color(102, 255, 102));
