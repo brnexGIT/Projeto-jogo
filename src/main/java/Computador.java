@@ -31,10 +31,10 @@ public class Computador {
         if (pecas.get("placaDeVideo") != null) {multiplicador += pecas.get("placaDeVideo").getPoder();}
         if (pecas.get("processador") != null) {multiplicador += pecas.get("processador").getPoder();}
         if (pecas.get("placaMae") != null) {multiplicador += pecas.get("placaMae").getPoder();}
-        if (pecas.get("ram") != null) {multiplicador += pecas.get("ram").getPoder();}
+        if (pecas.get("ram") != null) {novaGeracao += pecas.get("ram").getPoder(); System.out.println(" - " + pecas.get("ram").getNome());}
         
         
-        geracao = (int)(novaGeracao * multiplicador / 100);
+        geracao = (int)(novaGeracao);
     }
     
     public void atualizarClique(){
