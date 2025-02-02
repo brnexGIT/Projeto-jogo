@@ -10,11 +10,13 @@ public class TrocarPeca extends javax.swing.JFrame {
     Computador computador;
     ArrayList<Item> lista;
     String nomePeca;
+    private final Interface jogo;
     
-    public TrocarPeca(ArrayList<Item> lista, Computador computador, String nomePeca) {
+    public TrocarPeca(Interface jogo, ArrayList<Item> lista, Computador computador, String nomePeca) {
         this.computador = computador;
         this.lista = lista;
         this.nomePeca = nomePeca;
+        this.jogo = jogo;
         
         initComponents();
         
@@ -104,7 +106,9 @@ public class TrocarPeca extends javax.swing.JFrame {
         }
         computador.atualizarClique();
         computador.atualizarGeracao();
+        jogo.atualizarImagens();
         dispose();
+        
     }//GEN-LAST:event_btConfirmarActionPerformed
 
     private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed

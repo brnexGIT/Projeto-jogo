@@ -484,6 +484,9 @@ public class Interface extends javax.swing.JFrame {
         labelMouse.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         labelMouse.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelMouse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/mouse/antigo.png"))); // NOI18N
+        labelMouse.setMaximumSize(new java.awt.Dimension(300, 100));
+        labelMouse.setMinimumSize(new java.awt.Dimension(300, 100));
+        labelMouse.setPreferredSize(new java.awt.Dimension(300, 100));
         labelMouse.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelMouseMouseClicked(evt);
@@ -491,6 +494,15 @@ public class Interface extends javax.swing.JFrame {
         });
 
         labelGabinete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/gabinete/antigo.png"))); // NOI18N
+        labelGabinete.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                labelGabineteAncestorAdded(evt);
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
         labelGabinete.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelGabineteMouseClicked(evt);
@@ -503,25 +515,25 @@ public class Interface extends javax.swing.JFrame {
             PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PCLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PCLayout.createSequentialGroup()
                         .addComponent(labelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelMouse, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PCLayout.createSequentialGroup()
+                        .addComponent(labelMouse, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PCLayout.createSequentialGroup()
                         .addComponent(labelMonitor)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(39, 39, 39)
                         .addComponent(labelGabinete)))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
         PCLayout.setVerticalGroup(
             PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PCLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelMonitor, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelGabinete))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(8, 8, 8)
+                .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labelGabinete)
+                    .addComponent(labelMonitor, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelMouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelTeclado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -613,11 +625,11 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_btRAM6ActionPerformed
 
     private void labelTecladoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelTecladoMouseClicked
-        new TrocarPeca(tecladoTem, computador, "teclado").setVisible(true);
+        new TrocarPeca(this, tecladoTem, computador, "teclado").setVisible(true);
     }//GEN-LAST:event_labelTecladoMouseClicked
 
     private void labelMouseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelMouseMouseClicked
-        new TrocarPeca(mouseTem, computador, "mouse").setVisible(true);
+        new TrocarPeca(this, mouseTem, computador, "mouse").setVisible(true);
     }//GEN-LAST:event_labelMouseMouseClicked
 
     private void labelGabineteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelGabineteMouseClicked
@@ -625,8 +637,12 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_labelGabineteMouseClicked
 
     private void labelMonitorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelMonitorMouseClicked
-        new TrocarPeca(monitorTem, computador, "monitor").setVisible(true);
+        new TrocarPeca(this, monitorTem, computador, "monitor").setVisible(true);
     }//GEN-LAST:event_labelMonitorMouseClicked
+
+    private void labelGabineteAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_labelGabineteAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_labelGabineteAncestorAdded
 
     public void atualizarDinheiro(){
         String labelText = String.format("Dinheiro: R$%d", dinheiro);

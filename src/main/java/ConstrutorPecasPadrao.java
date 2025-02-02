@@ -28,8 +28,9 @@ public class ConstrutorPecasPadrao {
     }
     
     static Item RAM(String nome, int custo, int poder, javax.swing.JButton botao){
-        return Item(nome, custo, poder, "Ram.png", botao);
+        return Item(nome, custo, poder, "ram/antigo", botao);
     }
+    
     
     
 }
