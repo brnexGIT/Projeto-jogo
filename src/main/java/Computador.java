@@ -34,7 +34,7 @@ public class Computador {
         if (pecas.get("ram") != null) {novaGeracao += pecas.get("ram").getPoder(); System.out.println(" - " + pecas.get("ram").getNome());}
         
         
-        geracao = (int)(novaGeracao);
+        geracao = (int)(novaGeracao * multiplicador / 100);
     }
     
     public void atualizarClique(){

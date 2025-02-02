@@ -275,13 +275,12 @@ public class Gabinete extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btMontarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMontarActionPerformed
-        jogo.computador.set("PlacaDeVideo", getItem(PlacasDeVideo, cbPlacaDeVideo));
-        jogo.computador.set("Processador", getItem(Processadores, cbProcessador));
-        jogo.computador.set("PlacaMae", getItem(PlacasMae, cbPlacaMae));
-        jogo.computador.set("Ram", getItem(RAMS, cbRAM));
-        jogo.computador.atualizarGeracao();
+        computador.set("placaDeVideo", getItem(PlacasDeVideo, cbPlacaDeVideo));
+        computador.set("processador", getItem(Processadores, cbProcessador));
+        computador.set("placaMae", getItem(PlacasMae, cbPlacaMae));
+        computador.set("ram", getItem(RAMS, cbRAM));
+        computador.atualizarGeracao();
         this.dispose();
-        System.out.println(computador.getGeracao() + "\n" + getItem(RAMS, cbRAM).getPoder());
     }//GEN-LAST:event_btMontarActionPerformed
 
     private void cbProcessadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProcessadorActionPerformed
