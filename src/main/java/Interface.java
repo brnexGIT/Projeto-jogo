@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
 
 public class Interface extends javax.swing.JFrame {
 
-    int dinheiro = 0;
+    int dinheiro = 50000;
     
     Computador computador;
     
@@ -125,8 +125,8 @@ public class Interface extends javax.swing.JFrame {
         Trabalho = new javax.swing.JPanel();
         botaoDinheiro = new javax.swing.JButton();
         txtDinheiro = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        labelGeracao = new javax.swing.JLabel();
+        labelClique = new javax.swing.JLabel();
         Loja = new javax.swing.JPanel();
         txtDinheiroLoja = new javax.swing.JLabel();
         AbasPecas = new javax.swing.JTabbedPane();
@@ -183,9 +183,9 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Geração");
+        labelGeracao.setText("Geração p/s");
 
-        jLabel2.setText("Por clique");
+        labelClique.setText("Dinheiro p/clique");
 
         javax.swing.GroupLayout TrabalhoLayout = new javax.swing.GroupLayout(Trabalho);
         Trabalho.setLayout(TrabalhoLayout);
@@ -193,29 +193,31 @@ public class Interface extends javax.swing.JFrame {
             TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TrabalhoLayout.createSequentialGroup()
                 .addGap(276, 276, 276)
-                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botaoDinheiro, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addComponent(txtDinheiro))
+                    .addGroup(TrabalhoLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(txtDinheiro)))
                 .addGap(277, 277, 277))
-            .addGroup(TrabalhoLayout.createSequentialGroup()
-                .addGap(200, 200, 200)
-                .addComponent(jLabel1)
-                .addGap(152, 152, 152)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(labelGeracao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelClique)
+                .addGap(74, 74, 74))
         );
         TrabalhoLayout.setVerticalGroup(
             TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(14, 14, 14)
                 .addComponent(txtDinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
+                .addGap(29, 29, 29)
                 .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addGap(123, 123, 123)
+                    .addComponent(labelClique)
+                    .addComponent(labelGeracao))
+                .addGap(144, 144, 144)
                 .addComponent(botaoDinheiro, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                .addGap(119, 119, 119))
+                .addGap(78, 78, 78))
         );
 
         jTabbedPane1.addTab("TRABALHO", Trabalho);
@@ -482,9 +484,6 @@ public class Interface extends javax.swing.JFrame {
         labelMouse.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         labelMouse.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelMouse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/mouse/antigo.png"))); // NOI18N
-        labelMouse.setMaximumSize(new java.awt.Dimension(230, 100));
-        labelMouse.setMinimumSize(new java.awt.Dimension(230, 100));
-        labelMouse.setPreferredSize(new java.awt.Dimension(230, 100));
         labelMouse.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelMouseMouseClicked(evt);
@@ -492,9 +491,6 @@ public class Interface extends javax.swing.JFrame {
         });
 
         labelGabinete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/gabinete/antigo.png"))); // NOI18N
-        labelGabinete.setMaximumSize(new java.awt.Dimension(225, 225));
-        labelGabinete.setMinimumSize(new java.awt.Dimension(225, 225));
-        labelGabinete.setPreferredSize(new java.awt.Dimension(225, 225));
         labelGabinete.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelGabineteMouseClicked(evt);
@@ -515,7 +511,7 @@ public class Interface extends javax.swing.JFrame {
                     .addGroup(PCLayout.createSequentialGroup()
                         .addComponent(labelMonitor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelGabinete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(labelGabinete)))
                 .addContainerGap(167, Short.MAX_VALUE))
         );
         PCLayout.setVerticalGroup(
@@ -524,7 +520,7 @@ public class Interface extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelMonitor, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelGabinete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelGabinete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(PCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelMouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -579,7 +575,7 @@ public class Interface extends javax.swing.JFrame {
 
     private void botaoDinheiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDinheiroActionPerformed
         dinheiro += computador.getClique();
-
+        System.out.println(computador.getGeracao());
         atualizarDinheiro();
     }//GEN-LAST:event_botaoDinheiroActionPerformed
 
@@ -601,7 +597,7 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_btRAM2ActionPerformed
 
     private void btRAM3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRAM3ActionPerformed
-        comprar(ramLoja[1], ramTem, btRAM3);
+        comprar(ramLoja[2], ramTem, btRAM3);
     }//GEN-LAST:event_btRAM3ActionPerformed
 
     private void btRAM4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRAM4ActionPerformed
@@ -636,6 +632,8 @@ public class Interface extends javax.swing.JFrame {
         String labelText = String.format("Dinheiro: R$%d", dinheiro);
         txtDinheiro.setText(labelText);
         txtDinheiroLoja.setText(labelText);
+        labelClique.setText("Dinheiro p/Clique: " + computador.getClique());
+        labelGeracao.setText("Dinheiro p/s: " + computador.getGeracao());
     }
     
     public void atualizarImagens(){
@@ -722,8 +720,6 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JButton btRAM5;
     private javax.swing.JButton btRAM6;
     private javax.swing.JButton btTeclado1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -732,7 +728,9 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel labelClique;
     private javax.swing.JLabel labelGabinete;
+    private javax.swing.JLabel labelGeracao;
     private javax.swing.JLabel labelMonitor;
     private javax.swing.JLabel labelMouse;
     private javax.swing.JLabel labelTeclado;
