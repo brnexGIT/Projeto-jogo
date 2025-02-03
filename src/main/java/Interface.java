@@ -1,5 +1,6 @@
 package main.java;
 import java.awt.Image;
+import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -103,6 +104,12 @@ public class Interface extends javax.swing.JFrame {
         mouseLoja[1] = ConstrutorPecasPadrao.Item("Dragon ball", 5000, 30, "mouse/dragonball", btMouse2);
         mouseLoja[2] = ConstrutorPecasPadrao.Item("Hotwheels ataque do tuburão", 10000, 50, "mouse/shark attack", btMouse3);
         mouseLoja[3] = ConstrutorPecasPadrao.Item("Mouse Gamer", 100000, 100 , "mouse/clicador 2000", btMouse4);
+        
+        gabineteLoja = new Item[4];
+        gabineteLoja[0] = ConstrutorPecasPadrao.Item("Antigo", 100, 5, "gabinete/astethics 1", btMouse1);
+        gabineteLoja[1] = ConstrutorPecasPadrao.Item("Diferente dos demais", 100, 5, "gabinete/emo 2", btMouse1);
+        gabineteLoja[2] = ConstrutorPecasPadrao.Item("Com LUZINHA", 100, 5, "mouse/vagalume 3", btMouse1);
+        gabineteLoja[3] = ConstrutorPecasPadrao.Item("O optimus prime", 100, 5, "mouse/escoliose 4", btMouse1);
         
         // Define o ciclo do jogo
         lastTime = System.currentTimeMillis();
@@ -746,6 +753,7 @@ public class Interface extends javax.swing.JFrame {
         dinheiro += computador.getClique();
         System.out.println(computador.getGeracao());
         atualizarDinheiro();
+        System.out.println(evt.getModifiers());
     }//GEN-LAST:event_botaoDinheiroActionPerformed
 
     private void btProcessadori5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProcessadori5ActionPerformed
@@ -790,7 +798,18 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_labelMouseMouseClicked
 
     private void labelGabineteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelGabineteMouseClicked
-        new Gabinete(this, computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
+        
+        
+        if(evt.getButton() == 3){
+            new Gabinete(this, computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);  
+            
+        }
+        if(evt.getButton() == 1){
+            new TrocarPeca(this, gabineteTem, computador, "gabinete").setVisible(true);
+            
+        }
+        
+        
     }//GEN-LAST:event_labelGabineteMouseClicked
 
     private void labelMonitorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelMonitorMouseClicked
