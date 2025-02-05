@@ -20,7 +20,7 @@ public class Interface extends javax.swing.JFrame {
     
     Computador computador;
     
-    private long lastTime = System.currentTimeMillis(); 
+    private long ultimoFrame = System.currentTimeMillis(); 
     private final Runnable gameCycle;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
@@ -112,7 +112,7 @@ public class Interface extends javax.swing.JFrame {
         gabineteLoja[3] = ConstrutorPecasPadrao.Item("O optimus prime", 100, 5, "mouse/escoliose 4", btMouse1);
         
         // Define o ciclo do jogo
-        lastTime = System.currentTimeMillis();
+        ultimoFrame = System.currentTimeMillis();
         this.gameCycle = new Runnable() {
             @Override
             public void run() {
@@ -120,7 +120,7 @@ public class Interface extends javax.swing.JFrame {
  
                 // Calcula deltaT
                 long currentTime = System.currentTimeMillis();
-                long deltaT = currentTime - lastTime;
+                long deltaT = currentTime - ultimoFrame;
                 long deltaTSegundos = (long) (deltaT / 1000.0);
                 int milisegundosSobrando = (int) (deltaT % 1000);
  
@@ -129,7 +129,7 @@ public class Interface extends javax.swing.JFrame {
  
                 dinheiro += geracao;
  
-                lastTime = System.currentTimeMillis() - milisegundosSobrando;
+                ultimoFrame = System.currentTimeMillis() - milisegundosSobrando;
             }
         };
         scheduler.scheduleAtFixedRate(gameCycle, 0, 16, TimeUnit.MILLISECONDS);
