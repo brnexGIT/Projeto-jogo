@@ -111,6 +111,7 @@ public class Interface extends javax.swing.JFrame {
         gabineteLoja[2] = ConstrutorPecasPadrao.Item("Com LUZINHA", 100, 5, "mouse/vagalume 3", btMouse1);
         gabineteLoja[3] = ConstrutorPecasPadrao.Item("O optimus prime", 100, 5, "mouse/escoliose 4", btMouse1);
         
+        
         // Define o ciclo do jogo
         ultimoFrame = System.currentTimeMillis();
         this.gameCycle = new Runnable() {
