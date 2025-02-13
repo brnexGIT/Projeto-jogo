@@ -31,7 +31,8 @@ public class Computador {
         if (pecas.get("placaDeVideo") != null) {multiplicador += pecas.get("placaDeVideo").getPoder();}
         if (pecas.get("processador") != null) {multiplicador += pecas.get("processador").getPoder();}
         if (pecas.get("placaMae") != null) {multiplicador += pecas.get("placaMae").getPoder();}
-        if (pecas.get("ram") != null) {novaGeracao += pecas.get("ram").getPoder(); System.out.println(" - " + pecas.get("ram").getNome());}
+        if (pecas.get("ram") != null) {novaGeracao += pecas.get("ram").getPoder();
+        }
         
         
         geracao = (int)(novaGeracao * multiplicador / 100);
@@ -40,6 +41,7 @@ public class Computador {
     public void atualizarClique(){
         clique = pecas.get("mouse").getPoder() * (100 + pecas.get("teclado").getPoder()) / 100;
     }
+    
     
     public void set(String nome, Item peca){
         pecas.put(nome, peca);

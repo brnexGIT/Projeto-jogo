@@ -279,7 +279,7 @@ public class Gabinete extends javax.swing.JFrame {
         computador.set("processador", getItem(Processadores, cbProcessador));
         computador.set("placaMae", getItem(PlacasMae, cbPlacaMae));
         computador.set("ram", getItem(RAMS, cbRAM));
-        computador.atualizarGeracao();
+        computador.atualizarGeracao(); 
         this.dispose();
     }//GEN-LAST:event_btMontarActionPerformed
 
