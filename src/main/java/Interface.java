@@ -1,8 +1,10 @@
 package main.java;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import java.util.Timer;
 import java.util.concurrent.Executors;
@@ -13,14 +15,17 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 
 public class Interface extends javax.swing.JFrame {
 
     int dinheiro = 50000000;
     
     Computador computador;
-    
+    private HashMap<String, Boolean> jaVisto;
     private long ultimoFrame = System.currentTimeMillis(); 
+    private long[] tempoHabilidades = new long[2];
     private final Runnable gameCycle;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
@@ -77,9 +82,15 @@ public class Interface extends javax.swing.JFrame {
                 tecladoTem.get(0), 
                 mouseTem.get(0));
         
-        // Inicia os componentes gráficos
+        // Inicia os componentes gráfico
         initComponents();
         atualizarImagens();
+        // Inicia jaVisto
+        jaVisto = new HashMap<String, Boolean>();
+        String[] nomesDicas = {"Trabalho", "Loja", "PC"};
+        for(int i = 0; i<nomesDicas.length ; i++){
+            jaVisto.put(nomesDicas[i], false);
+        }
         
         // Define os itens da loja
         ramLoja = new Item[3];
@@ -111,7 +122,6 @@ public class Interface extends javax.swing.JFrame {
         gabineteLoja[2] = ConstrutorPecasPadrao.Item("Com LUZINHA", 100, 5, "mouse/vagalume 3", btMouse1);
         gabineteLoja[3] = ConstrutorPecasPadrao.Item("O optimus prime", 100, 5, "mouse/escoliose 4", btMouse1);
         
-        
         // Define o ciclo do jogo
         ultimoFrame = System.currentTimeMillis();
         this.gameCycle = new Runnable() {
@@ -135,6 +145,7 @@ public class Interface extends javax.swing.JFrame {
         };
         scheduler.scheduleAtFixedRate(gameCycle, 0, 16, TimeUnit.MILLISECONDS);
     }
+    
 
     
     @SuppressWarnings("unchecked")
@@ -142,12 +153,14 @@ public class Interface extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenu4 = new javax.swing.JMenu();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        abaPc = new javax.swing.JTabbedPane();
         Trabalho = new javax.swing.JPanel();
         botaoDinheiro = new javax.swing.JButton();
         txtDinheiro = new javax.swing.JLabel();
         labelGeracao = new javax.swing.JLabel();
         labelClique = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         Loja = new javax.swing.JPanel();
         txtDinheiroLoja = new javax.swing.JLabel();
         AbasPecas = new javax.swing.JTabbedPane();
@@ -195,6 +208,22 @@ public class Interface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        abaPc.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                abaPcStateChanged(evt);
+            }
+        });
+        abaPc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                abaPcMouseClicked(evt);
+            }
+        });
+        abaPc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                abaPcKeyPressed(evt);
+            }
+        });
+
         botaoDinheiro.setBackground(new java.awt.Color(153, 255, 51));
         botaoDinheiro.setText("DIN DIN");
         botaoDinheiro.addActionListener(new java.awt.event.ActionListener() {
@@ -220,40 +249,59 @@ public class Interface extends javax.swing.JFrame {
 
         labelClique.setText("Dinheiro p/clique");
 
+        jButton1.setText("jButton1");
+
+        jButton2.setText("jButton2");
+
         javax.swing.GroupLayout TrabalhoLayout = new javax.swing.GroupLayout(Trabalho);
         Trabalho.setLayout(TrabalhoLayout);
         TrabalhoLayout.setHorizontalGroup(
             TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TrabalhoLayout.createSequentialGroup()
-                .addGap(276, 276, 276)
-                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(botaoDinheiro, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
-                    .addGroup(TrabalhoLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(txtDinheiro)))
-                .addGap(277, 277, 277))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addComponent(labelGeracao)
+                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelGeracao)
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(labelClique)
-                .addGap(74, 74, 74))
+                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(91, 91, 91))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
+                        .addComponent(labelClique)
+                        .addGap(82, 82, 82))))
+            .addGroup(TrabalhoLayout.createSequentialGroup()
+                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(TrabalhoLayout.createSequentialGroup()
+                        .addGap(246, 246, 246)
+                        .addComponent(botaoDinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(TrabalhoLayout.createSequentialGroup()
+                        .addGap(265, 265, 265)
+                        .addComponent(txtDinheiro)))
+                .addContainerGap(265, Short.MAX_VALUE))
         );
         TrabalhoLayout.setVerticalGroup(
             TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TrabalhoLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(15, 15, 15)
                 .addComponent(txtDinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(28, 28, 28)
                 .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelClique)
                     .addComponent(labelGeracao))
-                .addGap(144, 144, 144)
-                .addComponent(botaoDinheiro, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                .addGap(78, 78, 78))
+                .addGap(40, 40, 40)
+                .addGroup(TrabalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(botaoDinheiro, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("TRABALHO", Trabalho);
+        jButton1.setVisible(false);
+        jButton2.setVisible(false);
+
+        abaPc.addTab("TRABALHO", Trabalho);
 
         txtDinheiroLoja.setFont(new java.awt.Font("DejaVu Serif Condensed", 0, 14)); // NOI18N
         txtDinheiroLoja.setText("Dinheiro: 0");
@@ -279,7 +327,7 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btProcessadori5, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addContainerGap(370, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -613,10 +661,10 @@ public class Interface extends javax.swing.JFrame {
             LojaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LojaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(AbasPecas)
+                .addComponent(AbasPecas, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(LojaLayout.createSequentialGroup()
-                .addGap(272, 272, 272)
+                .addGap(264, 264, 264)
                 .addComponent(txtDinheiroLoja)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -630,7 +678,7 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("LOJA", Loja);
+        abaPc.addTab("LOJA", Loja);
 
         labelMonitor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/monitor/antigo.png"))); // NOI18N
         labelMonitor.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -705,21 +753,22 @@ public class Interface extends javax.swing.JFrame {
                 .addGap(32, 32, 32))
         );
 
-        jTabbedPane1.addTab("PC", PC);
+        abaPc.addTab("PC", PC);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(abaPc, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(abaPc, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -752,9 +801,11 @@ public class Interface extends javax.swing.JFrame {
 
     private void botaoDinheiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDinheiroActionPerformed
         dinheiro += computador.getClique();
-        System.out.println(computador.getGeracao());
         atualizarDinheiro();
-        System.out.println(evt.getModifiers());
+        if(!jaVisto.get("Trabalho")){
+        JOptionPane.showMessageDialog(rootPane, "Aqui é sua área de trabalho\nAo clicar dindin se ganha dinheiro!");
+        jaVisto.put("Trabalho", true);
+        }
     }//GEN-LAST:event_botaoDinheiroActionPerformed
 
     private void btProcessadori5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProcessadori5ActionPerformed
@@ -871,6 +922,33 @@ public class Interface extends javax.swing.JFrame {
         comprar(tecladoLoja[3], tecladoTem, btTeclado4);
     }//GEN-LAST:event_btTeclado4ActionPerformed
 
+    private void abaPcMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_abaPcMouseClicked
+        
+        
+    }//GEN-LAST:event_abaPcMouseClicked
+
+    private void abaPcKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_abaPcKeyPressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_abaPcKeyPressed
+
+    private void abaPcStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_abaPcStateChanged
+        // TODO add your handling code here:
+
+     if(abaPc.getSelectedIndex() == 1 ){
+         if (!jaVisto.get("Loja")){
+            JOptionPane.showMessageDialog(rootPane, "Esta é a loja\nAqui você pode comprar itens para melhorar seu Setup!");
+            jaVisto.put("Loja", true);
+        }
+     }else if(abaPc.getSelectedIndex() == 2){
+         if(!jaVisto.get("PC")){
+            JOptionPane.showMessageDialog(rootPane, "Aqui é seu PC\nVocê deve equipar as peças compradas para utilizá-las!\n "
+                    + "Botão esquerdo = Altera a peça clicada\nBotão direito no 'gabinete' = Abre o computador para trocar-se os hardwares");
+            jaVisto.put("PC", true);
+        }
+     }
+    }//GEN-LAST:event_abaPcStateChanged
+
     public void atualizarDinheiro(){
         String labelText = String.format("Dinheiro: R$%d", dinheiro);
         txtDinheiro.setText(labelText);
@@ -953,6 +1031,7 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JPanel Loja;
     private javax.swing.JPanel PC;
     private javax.swing.JPanel Trabalho;
+    private javax.swing.JTabbedPane abaPc;
     private javax.swing.JButton botaoDinheiro;
     private javax.swing.JButton btMonitor1;
     private javax.swing.JButton btMonitor2;
@@ -974,6 +1053,8 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JButton btTeclado2;
     private javax.swing.JButton btTeclado3;
     private javax.swing.JButton btTeclado4;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -982,7 +1063,6 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelClique;
     private javax.swing.JLabel labelGabinete;
     private javax.swing.JLabel labelGeracao;
