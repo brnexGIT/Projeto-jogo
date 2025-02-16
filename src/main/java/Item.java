@@ -1,17 +1,40 @@
 package main.java;
 
+import java.awt.Image;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
 public class Item {
-    private String nome;
-    private int custo;
-    private int poder;
-    private String caminhoImagem;
+    private final String nome;
+    private final int custo;
+    private final int poder;
+    private final String caminhoImagem;
+    private Image imagem = null;
+    private javax.swing.JButton botao;
 
     
     public Item(String nome, int custo, int poder, String caminhoImagem) {
         this.nome = nome;
         this.custo = custo;
-        this.caminhoImagem = caminhoImagem;
         this.poder = poder;
+        this.botao = null;
+        this.caminhoImagem = caminhoImagem;
+        
+        try {
+            imagem = ImageIO.read(getClass().getResource("/main/resources/images/" + caminhoImagem + ".png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.WARNING, "Erro ao carregar imagem", ex);
+        }
+    
+    }
+    
+    public ImageIcon getIcon(int largura, int altura){
+        return new ImageIcon(imagem.getScaledInstance(largura, altura, Image.SCALE_DEFAULT));
     }
 
   
@@ -30,4 +53,22 @@ public class Item {
     public int getPoder() {
         return poder;
     }
+
+    public JButton getBotao() {
+        return botao;
+    }
+
+    public void setBotao(JButton botao) {
+        this.botao = botao;
+    }
+
+    public Image getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(Image imagem) {
+        this.imagem = imagem;
+    }
+    
+    
 }
