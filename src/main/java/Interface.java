@@ -1,4 +1,6 @@
 package main.java;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -120,7 +122,7 @@ public class Interface extends JFrame {
         processadorLoja = new Item[0];
         placaVideoLoja = new Item[0];
         placaMaeLoja = new Item[0];
-        ramLoja = new Item[3];
+        ramLoja = new Item[2];
         ramLoja[0] = ConstrutorPecasPadrao.RAM("DDR3 2GB", 10, 1);
         ramLoja[1] = ConstrutorPecasPadrao.RAM("DDR3 4GB", 20, 2);
         ramLoja[2] = ConstrutorPecasPadrao.RAM("DDR3 8GB", 50, 4);
@@ -224,28 +226,28 @@ public class Interface extends JFrame {
         // Aba principal "Área de trabalho"
         abaTrabalho.setLayout(new java.awt.GridLayout(0, 1));
 
-        // Contador de dinheiro
+          // Contador de dinheiro
         txtDinheiro.setFont(new java.awt.Font("DejaVu Serif Condensed", 0, 14)); // NOI18N
         txtDinheiro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtDinheiro.setText("Dinheiro: 0");
         panelDinheiro.add(txtDinheiro);
         abaTrabalho.add(panelDinheiro);
 
-        // Geração
+          // Geração
         labelClique.setText("Dinheiro p/clique");
         labelGeracao.setText("Geração p/s");
         panelGeracoes.add(labelClique);
         panelGeracoes.add(labelGeracao);
         abaTrabalho.add(panelGeracoes);
 
-        // Botão de dinheiro
+          // Botão de dinheiro
         botaoDinheiro.setBackground(new java.awt.Color(153, 255, 51));
         botaoDinheiro.setText("Programar");
         botaoDinheiro.addActionListener((java.awt.event.ActionEvent evt) -> {
             botaoDinheiroActionPerformed(evt);
         });
-        // Segurar um botão fica spamando cliques, útil para testes
-        // TODO - Remover
+          // Segurar um botão fica spamando cliques, útil para testes
+            // TODO - Remover
         botaoDinheiro.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -255,17 +257,17 @@ public class Interface extends JFrame {
         panelProgramar.add(botaoDinheiro);
         abaTrabalho.add(panelProgramar);
 
-        // Botões das habilidades
+          // Botões das habilidades
         btHabilidadeMonitor.setVisible(false);
         btHabilidadeGabinete.setVisible(false);
         panelHabilidades.add(btHabilidadeMonitor);
         panelHabilidades.add(btHabilidadeGabinete);
         abaTrabalho.add(panelHabilidades);
         
-        // Mostra as missões disponíveis
+          // Mostra as missões disponíveis
         abaTrabalho.add(panelMissoes);
 
-        // Adiciona a aba "Trabalho" no gerenciador de abas "AbasPrincipais"
+          // Adiciona a aba "Trabalho" no gerenciador de abas "AbasPrincipais"
         gerenciadorAbasPrincipais.addTab("TRABALHO", abaTrabalho);
 
         
@@ -277,7 +279,7 @@ public class Interface extends JFrame {
         txtDinheiroLoja.setText("Dinheiro: 0");
         AbaLoja.add(txtDinheiroLoja);
 
-        // Loopa por todas as abas da loja criando ela e seus botões
+          // Loopa por todas as abas da loja criando ela e seus botões
         for (var loja : lojas) {
             ArrayList<Item> tem = loja.getTem();
             Item[] lojaInventario = loja.getLoja();
@@ -303,74 +305,80 @@ public class Interface extends JFrame {
         AbaLoja.add(gerenciadorAbasPecas);
         gerenciadorAbasPrincipais.addTab("LOJA", AbaLoja);
         
+        
+        
         // Aba do computador
-        labelMonitor.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/monitor/antigo.png"))); // NOI18N
+        abaPC.setLayout(new GridBagLayout());
+        abaPC.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                //formComponentResized(evt);
+            }
+        });
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        
+          // Monitor
+            // Adiciona função trocar peça
         labelMonitor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelMonitorMouseClicked(evt);
+                abrirTrocarPeca(monitorTem, "monitor");
             }
         });
+          // Propriedades do grid em que reside
+        c.gridwidth = 2;
+        c.gridheight = 2;
+        abaPC.add(labelMonitor, c);
+        
+        
+          // Gabinete
+        labelGabinete.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Botão direito
+                if(evt.getButton() == 3){
+                    abrirGabinete();
+                }
+                // Botão esquerdo
+                if(evt.getButton() == 1){
+                    abrirTrocarPeca(gabineteTem, "gabinete");
+                }
+            }
+        });
+            // Propriedades do grid em que reside
+        c.gridwidth = 1;
+        c.gridx = 2;
+        abaPC.add(labelGabinete, c);
 
+        // Teclado
         labelTeclado.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/teclado/antigo.png"))); // NOI18N
         labelTeclado.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelTecladoMouseClicked(evt);
+                abrirTrocarPeca(tecladoTem, "teclado");
             }
         });
+            // Propriedades do grid em que reside
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        abaPC.add(labelTeclado, c);
 
-        labelMouse.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
-        labelMouse.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        // Mouse
         labelMouse.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/mouse/antigo.png"))); // NOI18N
-        labelMouse.setMaximumSize(new java.awt.Dimension(300, 100));
-        labelMouse.setMinimumSize(new java.awt.Dimension(300, 100));
-        labelMouse.setPreferredSize(new java.awt.Dimension(300, 100));
         labelMouse.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelMouseMouseClicked(evt);
+                abrirTrocarPeca(mouseTem, "mouse");
             }
         });
-
-        labelGabinete.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/gabinete/antigo.png"))); // NOI18N
-        labelGabinete.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelGabineteMouseClicked(evt);
-            }
-        });
-
-        GroupLayout AbaPCLayout = new GroupLayout(abaPC);
-        abaPC.setLayout(AbaPCLayout);
-        AbaPCLayout.setHorizontalGroup(
-            AbaPCLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(AbaPCLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(AbaPCLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(AbaPCLayout.createSequentialGroup()
-                        .addComponent(labelTeclado, GroupLayout.PREFERRED_SIZE, 280, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelMouse, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(GroupLayout.Alignment.TRAILING, AbaPCLayout.createSequentialGroup()
-                        .addComponent(labelMonitor)
-                        .addGap(39, 39, 39)
-                        .addComponent(labelGabinete)))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        AbaPCLayout.setVerticalGroup(
-            AbaPCLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(AbaPCLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addGroup(AbaPCLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(labelGabinete)
-                    .addComponent(labelMonitor, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
-                .addGroup(AbaPCLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelMouse, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labelTeclado, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(32, 32, 32))
-        );
+            // Propriedades do grid em que reside
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.gridx = 2;
+        c.gridy = 2;
+        abaPC.add(labelMouse, c);
 
         gerenciadorAbasPrincipais.addTab("PC", abaPC);
         getContentPane().add(gerenciadorAbasPrincipais);
@@ -391,27 +399,12 @@ public class Interface extends JFrame {
         }
     }
     
-    private void labelTecladoMouseClicked(java.awt.event.MouseEvent evt) {
-        new TrocarPeca(this, tecladoTem, computador, "teclado").setVisible(true);
+    private void abrirTrocarPeca(ArrayList<Item> inventario, String nome) {
+        new TrocarPeca(this, inventario, computador, nome).setVisible(true);
     }
-
-    private void labelMouseMouseClicked(java.awt.event.MouseEvent evt) {
-        new TrocarPeca(this, mouseTem, computador, "mouse").setVisible(true);
-    }
-
-    private void labelGabineteMouseClicked(java.awt.event.MouseEvent evt) {
-        // Botão direito
-        if(evt.getButton() == 3){
-            new Gabinete(this, computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
-        }
-        // Botão esquerdo
-        if(evt.getButton() == 1){
-            new TrocarPeca(this, gabineteTem, computador, "gabinete").setVisible(true);
-        }   
-    }
-
-    private void labelMonitorMouseClicked(java.awt.event.MouseEvent evt) {
-        new TrocarPeca(this, monitorTem, computador, "monitor").setVisible(true);
+    
+    private void abrirGabinete(){
+        new Gabinete(this, computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
     }
 
     private void AbasPrincipaisStateChanged(javax.swing.event.ChangeEvent evt) {
@@ -442,13 +435,16 @@ public class Interface extends JFrame {
     
     public final void atualizarImagens(){
         try {
-            labelGabinete.setIcon(carregarImagem(computador.get("gabinete").getCaminhoImagem(), 225, 225));
-            labelMonitor.setIcon(carregarImagem(computador.get("monitor").getCaminhoImagem(), 222, 227));
-            labelTeclado.setIcon(carregarImagem(computador.get("teclado").getCaminhoImagem(), 280, 100));
-            labelMouse.setIcon(carregarImagem(computador.get("mouse").getCaminhoImagem(), 230, 100));
+            labelGabinete.setIcon(carregarImagem(computador.get("gabinete").getCaminhoImagem(), 128, 256));
+            labelMonitor.setIcon(carregarImagem(computador.get("monitor").getCaminhoImagem(), 256, 256));
+            labelTeclado.setIcon(carregarImagem(computador.get("teclado").getCaminhoImagem(), 280, 140));
+            labelMouse.setIcon(carregarImagem(computador.get("mouse").getCaminhoImagem(), 140, 140));
         } catch (IOException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.WARNING, "Erro ao carregar imagem", ex);
         }
+    }
+    private void atualizarTamanhoImagens() {
+        
     }
     
     public Icon carregarImagem(String caminho, int largura, int altura) throws IOException{
