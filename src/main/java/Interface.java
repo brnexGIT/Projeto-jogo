@@ -286,6 +286,7 @@ public class Interface extends JFrame {
             JButton[] bts = loja.getBotoes();
             
             aba.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            panel.setLayout(new WrapLayout());
             // Cria botões e coloca função neles
             for (int i = 0; i < lojaInventario.length; i++) {
                 final int iFinal = i;
