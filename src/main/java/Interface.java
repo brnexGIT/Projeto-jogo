@@ -23,6 +23,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 
+
+@SuppressWarnings("FieldMayBeFinal")
 public class Interface extends JFrame {
 
     int dinheiro = 50000000;
@@ -44,14 +46,15 @@ public class Interface extends JFrame {
     private ArrayList<Item> tecladoTem;
     private ArrayList<Item> mouseTem;
     
-    private Item[] processadorLoja;
-    private Item[] placaVideoLoja;
-    private Item[] placaMaeLoja;
-    private Item[] ramLoja;
-    private Item[] gabineteLoja;
-    private Item[] monitorLoja;
-    private Item[] tecladoLoja;
-    private Item[] mouseLoja;
+    
+    private final Item[] processadorLoja;
+    private final Item[] placaVideoLoja;
+    private final Item[] placaMaeLoja;
+    private final Item[] ramLoja;
+    private final Item[] gabineteLoja;
+    private final Item[] monitorLoja;
+    private final Item[] tecladoLoja;
+    private final Item[] mouseLoja;
     
     private ConjuntoLoja[] lojas;
     
@@ -152,24 +155,21 @@ public class Interface extends JFrame {
         
         // Define o ciclo do jogo
         ultimoFrame = System.currentTimeMillis();
-        this.gameCycle = new Runnable() {
-            @Override
-            public void run() {
-                atualizarDinheiro();
- 
-                // Calcula deltaT
-                long currentTime = System.currentTimeMillis();
-                long deltaT = currentTime - ultimoFrame;
-                long deltaTSegundos = (long) (deltaT / 1000.0);
-                int milisegundosSobrando = (int) (deltaT % 1000);
- 
- 
-                long geracao = (long) computador.getGeracao() * deltaTSegundos;
- 
-                dinheiro += geracao;
- 
-                ultimoFrame = System.currentTimeMillis() - milisegundosSobrando;
-            }
+        this.gameCycle = () -> {
+            atualizarDinheiro();
+            
+            // Calcula deltaT
+            long currentTime = System.currentTimeMillis();
+            long deltaT = currentTime - ultimoFrame;
+            long deltaTSegundos = (long) (deltaT / 1000.0);
+            int milisegundosSobrando = (int) (deltaT % 1000);
+            
+            
+            long geracao = (long) computador.getGeracao() * deltaTSegundos;
+            
+            dinheiro += geracao;
+            
+            ultimoFrame = System.currentTimeMillis() - milisegundosSobrando;
         };
         scheduler.scheduleAtFixedRate(gameCycle, 0, 16, TimeUnit.MILLISECONDS);
     }
@@ -198,8 +198,8 @@ public class Interface extends JFrame {
                         loja.setPanel(new JPanel());
                         // Cria os botões;
                         var botoes = new JButton[loja.getLoja().length];
-                        for (JButton botao : botoes) {
-                            botao = new JButton();
+                        for (int i = 0; i < botoes.length; i++) {
+                            botoes[i] = new JButton();
                         }
                         loja.setBotoes(botoes);
                     }
@@ -247,6 +247,7 @@ public class Interface extends JFrame {
         // Segurar um botão fica spamando cliques, útil para testes
         // TODO - Remover
         botaoDinheiro.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 botaoDinheiroKeyPressed(evt);
             }
@@ -304,6 +305,7 @@ public class Interface extends JFrame {
         // Aba do computador
         labelMonitor.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/monitor/antigo.png"))); // NOI18N
         labelMonitor.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelMonitorMouseClicked(evt);
             }
@@ -311,6 +313,7 @@ public class Interface extends JFrame {
 
         labelTeclado.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/teclado/antigo.png"))); // NOI18N
         labelTeclado.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelTecladoMouseClicked(evt);
             }
@@ -323,6 +326,7 @@ public class Interface extends JFrame {
         labelMouse.setMinimumSize(new java.awt.Dimension(300, 100));
         labelMouse.setPreferredSize(new java.awt.Dimension(300, 100));
         labelMouse.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelMouseMouseClicked(evt);
             }
@@ -330,6 +334,7 @@ public class Interface extends JFrame {
 
         labelGabinete.setIcon(new ImageIcon(getClass().getResource("/main/resources/images/gabinete/antigo.png"))); // NOI18N
         labelGabinete.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelGabineteMouseClicked(evt);
             }
@@ -416,8 +421,11 @@ public class Interface extends JFrame {
             }
         } else if(gerenciadorAbasPrincipais.getSelectedIndex() == 2){
             if(!jaVisto.get("PC")){
-                JOptionPane.showMessageDialog(rootPane, "Aqui é seu PC\nVocê deve equipar as peças compradas para utilizá-las!\n "
-                       + "Botão esquerdo = Altera a peça clicada\nBotão direito no 'gabinete' = Abre o computador para trocar-se os hardwares");
+                JOptionPane.showMessageDialog(rootPane, """
+                                                        Aqui é seu PC
+                                                        Você deve equipar as peças compradas para utilizá-las!
+                                                         Botão esquerdo = Altera a peça clicada
+                                                        Botão direito no 'gabinete' = Abre o computador para trocar-se os hardwares""");
                 jaVisto.put("PC", true);
             }
         }
@@ -431,7 +439,7 @@ public class Interface extends JFrame {
         labelGeracao.setText("Dinheiro p/s: " + computador.getGeracao());
     }
     
-    public void atualizarImagens(){
+    public final void atualizarImagens(){
         try {
             labelGabinete.setIcon(carregarImagem(computador.get("gabinete").getCaminhoImagem(), 225, 225));
             labelMonitor.setIcon(carregarImagem(computador.get("monitor").getCaminhoImagem(), 222, 227));
@@ -454,14 +462,6 @@ public class Interface extends JFrame {
         }
     }
     
-    private void comprar(java.awt.event.ActionEvent evt, Item item, ArrayList lista, JButton botao) {
-        comprar(item,lista, botao);
-    }
-    
-    /**
-     * @param args the command line arguments
-     */
-    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -475,22 +475,17 @@ public class Interface extends JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
+        
+        //</editor-fold>
+        //</editor-fold>
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Interface().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Interface().setVisible(true);
         });
     }
 }
