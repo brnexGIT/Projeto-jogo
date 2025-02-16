@@ -1,7 +1,6 @@
 package main.java;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +8,8 @@ import javax.swing.JOptionPane;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 
 
@@ -65,8 +60,8 @@ public class Interface extends JFrame {
             private JPanel panelDinheiro;
                 private JLabel txtDinheiro;
             private JPanel panelGeracoes;
-                private JLabel labelClique;
-                private JLabel labelGeracao;
+                private JLabel labelGeracaoClique;
+                private JLabel labelGeracaoPassiva;
             private JPanel panelProgramar;
                 private JButton botaoDinheiro;
             private JPanel panelHabilidades;
@@ -122,7 +117,7 @@ public class Interface extends JFrame {
         processadorLoja = new Item[0];
         placaVideoLoja = new Item[0];
         placaMaeLoja = new Item[0];
-        ramLoja = new Item[2];
+        ramLoja = new Item[3];
         ramLoja[0] = ConstrutorPecasPadrao.RAM("DDR3 2GB", 10, 1);
         ramLoja[1] = ConstrutorPecasPadrao.RAM("DDR3 4GB", 20, 2);
         ramLoja[2] = ConstrutorPecasPadrao.RAM("DDR3 8GB", 50, 4);
@@ -184,8 +179,8 @@ public class Interface extends JFrame {
                 panelDinheiro = new JPanel();
                     txtDinheiro = new JLabel();
                 panelGeracoes = new JPanel();
-                    labelClique = new JLabel();
-                    labelGeracao = new JLabel();
+                    labelGeracaoClique = new JLabel();
+                    labelGeracaoPassiva = new JLabel();
                 panelProgramar = new JPanel();
                     botaoDinheiro = new JButton();
                 panelHabilidades = new JPanel();
@@ -234,10 +229,13 @@ public class Interface extends JFrame {
         abaTrabalho.add(panelDinheiro);
 
           // Geração
-        labelClique.setText("Dinheiro p/clique");
-        labelGeracao.setText("Geração p/s");
-        panelGeracoes.add(labelClique);
-        panelGeracoes.add(labelGeracao);
+        panelGeracoes.setLayout(new java.awt.GridLayout(1, 0));
+        labelGeracaoClique.setText("Dinheiro p/clique");
+        labelGeracaoClique.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelGeracaoPassiva.setText("Geração p/s");
+        labelGeracaoPassiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelGeracoes.add(labelGeracaoClique);
+        panelGeracoes.add(labelGeracaoPassiva);
         abaTrabalho.add(panelGeracoes);
 
           // Botão de dinheiro
@@ -311,7 +309,7 @@ public class Interface extends JFrame {
         abaPC.setLayout(new GridBagLayout());
         abaPC.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
-                //formComponentResized(evt);
+                atualizarImagens();
             }
         });
         GridBagConstraints c = new GridBagConstraints();
@@ -429,26 +427,23 @@ public class Interface extends JFrame {
         String labelText = String.format("Dinheiro: R$%d", dinheiro);
         txtDinheiro.setText(labelText);
         txtDinheiroLoja.setText(labelText);
-        labelClique.setText("Dinheiro p/Clique: " + computador.getClique());
-        labelGeracao.setText("Dinheiro p/s: " + computador.getGeracao());
+        labelGeracaoClique.setText("Dinheiro p/Clique: " + computador.getClique());
+        labelGeracaoPassiva.setText("Dinheiro p/s: " + computador.getGeracao());
     }
     
     public final void atualizarImagens(){
-        try {
-            labelGabinete.setIcon(carregarImagem(computador.get("gabinete").getCaminhoImagem(), 128, 256));
-            labelMonitor.setIcon(carregarImagem(computador.get("monitor").getCaminhoImagem(), 256, 256));
-            labelTeclado.setIcon(carregarImagem(computador.get("teclado").getCaminhoImagem(), 280, 140));
-            labelMouse.setIcon(carregarImagem(computador.get("mouse").getCaminhoImagem(), 140, 140));
-        } catch (IOException ex) {
-            Logger.getLogger(Interface.class.getName()).log(Level.WARNING, "Erro ao carregar imagem", ex);
-        }
-    }
-    private void atualizarTamanhoImagens() {
-        
+        int tamanho = abaPC.getWidth() < abaPC.getHeight() ? abaPC.getWidth() : abaPC.getHeight();
+        // Pequeno e grande
+        int p = tamanho / 3;
+        int g = p * 2;
+        labelGabinete.setIcon(computador.get("gabinete").getIcon(p, g));
+        labelMonitor.setIcon(computador.get("monitor").getIcon(g, g));
+        labelTeclado.setIcon(computador.get("teclado").getIcon(g, p));
+        labelMouse.setIcon(computador.get("mouse").getIcon(p, p));
     }
     
     public Icon carregarImagem(String caminho, int largura, int altura) throws IOException{
-        return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")).getScaledInstance(largura, altura, Image.SCALE_DEFAULT));
+        return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")));
     }
     
     private void comprar(Item item, ArrayList lista, JButton botao) {
