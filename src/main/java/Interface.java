@@ -1,4 +1,5 @@
 package main.java;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -29,7 +31,8 @@ public class Interface extends JFrame {
     public Computador computador;
     private HashMap<String, Boolean> jaVisto;
     private long ultimoFrame = System.currentTimeMillis(); 
-    private long[] tempoHabilidades = new long[2];
+    private Habilidade habilidadeAtiva;
+    private Habilidade habilidadePassiva;
     private final Runnable gameCycle;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
@@ -65,8 +68,14 @@ public class Interface extends JFrame {
             private JPanel panelProgramar;
                 private JButton botaoDinheiro;
             private JPanel panelHabilidades;
-                private JButton btHabilidadeGabinete;
-                private JButton btHabilidadeMonitor;
+                private JPanel panelHabilidadeAtiva;
+                    private JLabel labelHabilidadeAtiva;
+                    private JProgressBar barraHabilidadeAtiva;
+                    private JButton btHabilidadeAtiva;
+                private JPanel panelHabilidadePassiva;
+                    private JLabel labelHabilidadePassiva;
+                    private JProgressBar barraHabilidadePassiva;
+                    private JButton btHabilidadePassiva;
             private JPanel panelMissoes;
             private JPanel abaPC;
                 private JLabel labelMonitor;
@@ -80,6 +89,17 @@ public class Interface extends JFrame {
     
     
     public Interface() {
+        // Inicia jaVisto
+        jaVisto = new HashMap<>();
+        String[] nomesDicas = {"Trabalho", "Loja", "PC"};
+        for (String nome : nomesDicas) {
+            jaVisto.put(nome, false);
+        }
+        
+        // Inicia as skills
+        habilidadeAtiva = new Habilidade(100, 10, 10);
+        habilidadePassiva = new Habilidade(100, 10, 30);
+        
         
         // Cria o invetário das peças
         processadorTem = new ArrayList<>();
@@ -97,10 +117,10 @@ public class Interface extends JFrame {
         placaVideoTem.add(ConstrutorPecasPadrao.Item("Placa de imagem", 0, 0, "placadevideo/antigo"));
         placaMaeTem.add(ConstrutorPecasPadrao.Item("Placa avó", 0, 0, "PlacaMae/antigo"));
         ramTem.add(ConstrutorPecasPadrao.Item("Ram sem memória", 0, 0, "ram/antigo"));
-        gabineteTem.add(ConstrutorPecasPadrao.Item("Gabinete do lixo", 0, 0, "gabinete/antigo"));
-        monitorTem.add(ConstrutorPecasPadrao.Item("Monitor pré-histórico", 0, 0, "monitor/antigo"));
+        gabineteTem.add(ConstrutorPecasPadrao.Item("Gabinete do lixo", 0, 100, "gabinete/antigo"));
+        monitorTem.add(ConstrutorPecasPadrao.Item("Monitor pré-histórico", 0, 100, "monitor/antigo"));
         tecladoTem.add(ConstrutorPecasPadrao.Item("Teclado peba", 0, 0, "teclado/antigo"));
-        mouseTem.add(ConstrutorPecasPadrao.Item("Mouse arcaíco", 0, 1, "mouse/antigo"));
+        mouseTem.add(ConstrutorPecasPadrao.Item("Mouse arcaíco", 0, 2, "mouse/antigo"));
         
         computador = new Computador(
                 processadorTem.get(0), 
@@ -138,22 +158,17 @@ public class Interface extends JFrame {
         lojas[6] = new ConjuntoLoja("Teclados", tecladoTem, tecladoLoja);
         lojas[7] = new ConjuntoLoja("Mouses", mouseTem, mouseLoja);
         
-
-        // Inicia jaVisto
-        jaVisto = new HashMap<>();
-        String[] nomesDicas = {"Trabalho", "Loja", "PC"};
-        for (String nome : nomesDicas) {
-            jaVisto.put(nome, false);
-        }
         
         // Inicia os componentes gráfico
         initComponents();
         atualizarImagens();
+        atualizarPoderHabilidades();
         
         // Define o ciclo do jogo
         ultimoFrame = System.currentTimeMillis();
         this.gameCycle = () -> {
             atualizarDinheiro();
+            atualizarHabilidades(ultimoFrame);
             
             // Calcula deltaT
             long currentTime = System.currentTimeMillis();
@@ -162,7 +177,7 @@ public class Interface extends JFrame {
             int milisegundosSobrando = (int) (deltaT % 1000);
             
             
-            long geracao = (long) computador.getGeracao() * deltaTSegundos;
+            long geracao = (long) (computador.getGeracao() * habilidadePassiva.getPoder() * deltaTSegundos);
             
             dinheiro += geracao;
             
@@ -184,8 +199,14 @@ public class Interface extends JFrame {
                 panelProgramar = new JPanel();
                     botaoDinheiro = new JButton();
                 panelHabilidades = new JPanel();
-                    btHabilidadeMonitor = new JButton();
-                    btHabilidadeGabinete = new JButton();
+                    panelHabilidadeAtiva = new JPanel();
+                        labelHabilidadeAtiva = new JLabel();
+                        barraHabilidadeAtiva = new JProgressBar();
+                        btHabilidadeAtiva = new JButton();
+                    panelHabilidadePassiva = new JPanel();
+                        labelHabilidadePassiva = new JLabel();
+                        barraHabilidadePassiva = new JProgressBar();
+                        btHabilidadePassiva = new JButton();
                 panelMissoes = new JPanel();
             AbaLoja = new JPanel();
                 txtDinheiroLoja = new JLabel();
@@ -230,9 +251,7 @@ public class Interface extends JFrame {
 
           // Geração
         panelGeracoes.setLayout(new java.awt.GridLayout(1, 0));
-        labelGeracaoClique.setText("Dinheiro p/clique");
         labelGeracaoClique.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelGeracaoPassiva.setText("Geração p/s");
         labelGeracaoPassiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         panelGeracoes.add(labelGeracaoClique);
         panelGeracoes.add(labelGeracaoPassiva);
@@ -244,22 +263,42 @@ public class Interface extends JFrame {
         botaoDinheiro.addActionListener((java.awt.event.ActionEvent evt) -> {
             botaoDinheiroActionPerformed(evt);
         });
-          // Segurar um botão fica spamando cliques, útil para testes
-            // TODO - Remover
-        botaoDinheiro.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                botaoDinheiroKeyPressed(evt);
-            }
-        });
         panelProgramar.add(botaoDinheiro);
         abaTrabalho.add(panelProgramar);
 
-          // Botões das habilidades
-        btHabilidadeMonitor.setVisible(false);
-        btHabilidadeGabinete.setVisible(false);
-        panelHabilidades.add(btHabilidadeMonitor);
-        panelHabilidades.add(btHabilidadeGabinete);
+          // Habilidades
+        panelHabilidades.setLayout(new java.awt.GridLayout(1, 0));
+        panelHabilidadeAtiva.setLayout(new GridBagLayout());
+        panelHabilidadePassiva.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+            // Barras
+        panelHabilidadeAtiva.add(barraHabilidadeAtiva, c);
+        panelHabilidadePassiva.add(barraHabilidadePassiva, c);
+            // Labels
+        c.gridy = 1;
+        c.gridheight = 3;
+        labelHabilidadeAtiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelHabilidadeAtiva.setPreferredSize(new Dimension(150, 60));
+        panelHabilidadeAtiva.add(labelHabilidadeAtiva, c);
+        labelHabilidadePassiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelHabilidadePassiva.setPreferredSize(new Dimension(150, 60));
+        panelHabilidadePassiva.add(labelHabilidadePassiva, c);
+            // Botões
+        c.gridheight = 1;
+        c.gridy = 4;
+        btHabilidadeAtiva.setText("Ativar");
+        btHabilidadeAtiva.addActionListener((java.awt.event.ActionEvent evt) -> {
+            habilidadeAtiva.usar(ultimoFrame);
+        });
+        btHabilidadePassiva.setText("Ativar");
+        btHabilidadePassiva.addActionListener((java.awt.event.ActionEvent evt) -> {
+            habilidadePassiva.usar(ultimoFrame);
+        });
+        
+        panelHabilidadeAtiva.add(btHabilidadeAtiva, c);
+        panelHabilidadePassiva.add(btHabilidadePassiva, c);
+        panelHabilidades.add(panelHabilidadeAtiva);
+        panelHabilidades.add(panelHabilidadePassiva);
         abaTrabalho.add(panelHabilidades);
         
           // Mostra as missões disponíveis
@@ -312,7 +351,7 @@ public class Interface extends JFrame {
                 atualizarImagens();
             }
         });
-        GridBagConstraints c = new GridBagConstraints();
+        c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         
           // Monitor
@@ -384,12 +423,8 @@ public class Interface extends JFrame {
         pack();
     }
 
-    private void botaoDinheiroKeyPressed(java.awt.event.KeyEvent evt) {
-        dinheiro += computador.getClique();
-    }
-
     private void botaoDinheiroActionPerformed(java.awt.event.ActionEvent evt) {
-        dinheiro += computador.getClique();
+        dinheiro += computador.getClique() * habilidadeAtiva.getPoder();
         atualizarDinheiro();
         if(!jaVisto.get("Trabalho")){
             JOptionPane.showMessageDialog(rootPane, "Aqui é sua área de trabalho\nAo clicar dindin se ganha dinheiro!");
@@ -427,8 +462,44 @@ public class Interface extends JFrame {
         String labelText = String.format("Dinheiro: R$%d", dinheiro);
         txtDinheiro.setText(labelText);
         txtDinheiroLoja.setText(labelText);
-        labelGeracaoClique.setText("Dinheiro p/Clique: " + computador.getClique());
-        labelGeracaoPassiva.setText("Dinheiro p/s: " + computador.getGeracao());
+        labelGeracaoClique.setText("Dinheiro p/Clique: " + computador.getClique()*habilidadeAtiva.getPoder());
+        labelGeracaoPassiva.setText("Dinheiro p/s: " + computador.getGeracao()*habilidadePassiva.getPoder());
+    }
+    
+    public final void atualizarPoderHabilidades(){
+        int poderAtiva = computador.get("monitor").getPoder();
+        int poderPassiva = computador.get("gabinete").getPoder();
+        habilidadeAtiva.setPoder(poderAtiva);
+        habilidadePassiva.setPoder(poderPassiva);
+        labelHabilidadeAtiva.setText("<html>X" + ((float) poderAtiva / 100) + " mult para o clique" +
+                               "<br/>Duração: " + habilidadeAtiva.getDuracao()/1000 + "s" + 
+                               "<br/>Cooldown: " + habilidadeAtiva.getCooldown()/1000 + "s</html>");
+        labelHabilidadePassiva.setText("<html>X" + ((float) poderPassiva / 100) + " mult para a geração"+
+                               "<br/>Duração: " + habilidadePassiva.getDuracao()/1000 + "s" + 
+                               "<br/>Cooldown: " + habilidadePassiva.getCooldown()/1000 + "s</html>");
+    }
+    
+    public void atualizarHabilidades(long momentoAtual){
+        // Ativa
+        long duracaoRestante = habilidadeAtiva.tempoQueResta(momentoAtual);
+        long cooldown = habilidadeAtiva.tempoCooldown(momentoAtual);
+        if (duracaoRestante > 0) {
+            barraHabilidadeAtiva.setValue((int) duracaoRestante);
+            barraHabilidadeAtiva.setMaximum(habilidadeAtiva.getDuracao());
+        } else {
+            barraHabilidadeAtiva.setValue((int)(habilidadeAtiva.getCooldown() - cooldown));
+            barraHabilidadeAtiva.setMaximum(habilidadeAtiva.getCooldown());
+        }
+        // Passiva
+        duracaoRestante = habilidadePassiva.tempoQueResta(momentoAtual);
+        cooldown = habilidadePassiva.tempoCooldown(momentoAtual);
+        if (duracaoRestante > 0) {
+            barraHabilidadePassiva.setValue((int) duracaoRestante);
+            barraHabilidadePassiva.setMaximum(habilidadePassiva.getDuracao());
+        } else {
+            barraHabilidadePassiva.setValue((int)(habilidadePassiva.getCooldown() - cooldown));
+            barraHabilidadePassiva.setMaximum(habilidadePassiva.getCooldown());
+        }
     }
     
     public final void atualizarImagens(){
