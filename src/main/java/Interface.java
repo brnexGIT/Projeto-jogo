@@ -440,7 +440,7 @@ public class Interface extends JFrame {
     }
     
     private void abrirGabinete(){
-        new Gabinete(this, computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
+        new Gabinete(computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
     }
 
     private void AbasPrincipaisStateChanged(javax.swing.event.ChangeEvent evt) {
