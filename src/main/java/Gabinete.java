@@ -1,318 +1,129 @@
 package main.java;
 
-import main.java.Interface;
+import java.awt.Image;
+import java.net.URL;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
 
 public class Gabinete extends javax.swing.JFrame {
-    Interface jogo;
-    ArrayList<Item> Processadores;
-    ArrayList<Item> PlacasDeVideo;
-    ArrayList<Item> PlacasMae;
-    ArrayList<Item> RAMS;
-    Computador computador;
+    
+    private final ConjuntoPeca[] conjuntosPecas;
+    private final Computador computador;
+    
+    private javax.swing.JPanel PanelPrincipal;
+        private javax.swing.JTabbedPane GerenciadorAbas;
+        private javax.swing.JPanel panelMontar;
+            private javax.swing.JButton btMontar;
 
-    public Gabinete(Interface jogo, Computador computador,
+    public Gabinete(Computador computador,
             ArrayList<Item> Processadores, ArrayList<Item> PlacasDeVideo, ArrayList<Item> PlacasMae, ArrayList<Item> RAMS) {
-        initComponents();
-        this.jogo = jogo;
+        
         this.computador = computador;
         
-        this.Processadores = Processadores;
-        this.PlacasDeVideo = PlacasDeVideo;
-        this.PlacasMae = PlacasMae;
-        this.RAMS = RAMS;
+        conjuntosPecas = new ConjuntoPeca[4];
+        conjuntosPecas[0] = new ConjuntoPeca("Processador", "processador", Processadores);
+        conjuntosPecas[1] = new ConjuntoPeca("Placa de video", "placaDeVideo", PlacasDeVideo);
+        conjuntosPecas[2] = new ConjuntoPeca("Placa Mãe", "placaMae", PlacasMae);
+        conjuntosPecas[3] = new ConjuntoPeca("RAM", "ram", RAMS);
         
-        registrarItems(PlacasDeVideo, computador.get("placaDeVideo"), cbPlacaDeVideo);
-        registrarItems(Processadores, computador.get("processador"), cbProcessador);
-        registrarItems(PlacasMae, computador.get("placaMae"), cbPlacaMae);
-        registrarItems(RAMS, computador.get("ram"), cbRAM);
+        initComponents();
     }
     
    
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        PanelPrincipal = new javax.swing.JPanel();
+            GerenciadorAbas = new javax.swing.JTabbedPane();
+            panelMontar = new JPanel();
+                btMontar = new javax.swing.JButton();
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        panelProcessador = new javax.swing.JPanel();
-        imgProcessador = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        cbProcessador = new javax.swing.JComboBox<>();
-        panelRam = new javax.swing.JPanel();
-        imgRAM = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        cbRAM = new javax.swing.JComboBox<>();
-        jPanel4 = new javax.swing.JPanel();
-        imgPlacaDeVideo = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        cbPlacaDeVideo = new javax.swing.JComboBox<>();
-        jPanel5 = new javax.swing.JPanel();
-        imgPlacaMae = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        cbPlacaMae = new javax.swing.JComboBox<>();
-        btMontar = new javax.swing.JButton();
-
+        java.awt.GridBagConstraints c;
+            
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.GridLayout(1, 1));
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(994, 600));
+        // Abas das peças
+        PanelPrincipal.setLayout(new java.awt.GridBagLayout());
+        for (ConjuntoPeca conjunto : conjuntosPecas) {
+            JPanel panel = conjunto.getPanel();
+            JLabel label = conjunto.getLabel();
+            JComboBox cb = conjunto.getComboBox();
+            
+            // ComboBox
+            panel.setLayout(new java.awt.GridBagLayout());
+            c = new java.awt.GridBagConstraints();
+            c.gridx = 0;
+            c.gridy = 0;
+            panel.add(cb, c);
+            registrarItems(conjunto, computador.get(conjunto.getChave()));
+            cb.addActionListener((java.awt.event.ActionEvent evt) -> {
+                atualizarImagemLabel(conjunto, 200, 200);
+            });
+            
+            // Label com a imagem
+            c.gridx = 0;
+            c.gridy = 1;
+            c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            label.setPreferredSize(new java.awt.Dimension(200, 200));
+            panel.add(label, c);
+            atualizarImagemLabel(conjunto, 200, 200);
 
-        panelProcessador.setBackground(new java.awt.Color(102, 102, 102));
-        panelProcessador.setForeground(new java.awt.Color(102, 255, 102));
+            // Adiciona a aba
+            GerenciadorAbas.addTab(conjunto.getNome(), panel);
+        }
+        
+        // Adiciona o gerenciador de abas
+        c = new java.awt.GridBagConstraints();
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        c.weighty = 1.0;
+        PanelPrincipal.add(GerenciadorAbas, c);
 
-        imgProcessador.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        imgProcessador.setText("IMAGEM FODA");
-
-        jLabel1.setFont(new java.awt.Font("Microsoft YaHei Light", 3, 24)); // NOI18N
-        jLabel1.setText("Processador");
-
-        cbProcessador.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbProcessadorActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelProcessadorLayout = new javax.swing.GroupLayout(panelProcessador);
-        panelProcessador.setLayout(panelProcessadorLayout);
-        panelProcessadorLayout.setHorizontalGroup(
-            panelProcessadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelProcessadorLayout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(panelProcessadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbProcessador, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgProcessador, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        panelProcessadorLayout.setVerticalGroup(
-            panelProcessadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelProcessadorLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(imgProcessador, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbProcessador, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        panelRam.setBackground(new java.awt.Color(102, 102, 102));
-        panelRam.setForeground(new java.awt.Color(102, 255, 102));
-
-        imgRAM.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        imgRAM.setText("IMAGEM FODA");
-
-        jLabel2.setFont(new java.awt.Font("Microsoft YaHei Light", 3, 24)); // NOI18N
-        jLabel2.setText("RAM");
-
-        cbRAM.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbRAMActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelRamLayout = new javax.swing.GroupLayout(panelRam);
-        panelRam.setLayout(panelRamLayout);
-        panelRamLayout.setHorizontalGroup(
-            panelRamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRamLayout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(panelRamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(87, Short.MAX_VALUE))
-        );
-        panelRamLayout.setVerticalGroup(
-            panelRamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRamLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(imgRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbRAM, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
-        );
-
-        jPanel4.setBackground(new java.awt.Color(102, 102, 102));
-        jPanel4.setForeground(new java.awt.Color(102, 255, 102));
-
-        imgPlacaDeVideo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        imgPlacaDeVideo.setText("IMAGEM FODA");
-
-        jLabel3.setFont(new java.awt.Font("Microsoft YaHei Light", 3, 24)); // NOI18N
-        jLabel3.setText("Placa de Vídeo");
-
-        cbPlacaDeVideo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbPlacaDeVideoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbPlacaDeVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgPlacaDeVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(87, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(imgPlacaDeVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbPlacaDeVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
-        );
-
-        jPanel5.setBackground(new java.awt.Color(102, 102, 102));
-        jPanel5.setForeground(new java.awt.Color(102, 255, 102));
-
-        imgPlacaMae.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        imgPlacaMae.setText("IMAGEM FODA");
-
-        jLabel4.setFont(new java.awt.Font("Microsoft YaHei Light", 3, 24)); // NOI18N
-        jLabel4.setText("PLACA MÃE");
-
-        cbPlacaMae.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbPlacaMaeActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbPlacaMae, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgPlacaMae, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(81, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(imgPlacaMae, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbPlacaMae, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
-        );
-
+        // Botão montar
         btMontar.setText("MONTAR");
-        btMontar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btMontarActionPerformed(evt);
-            }
+        btMontar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            montarPc();
         });
+        panelMontar.add(btMontar);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelProcessador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(34, 34, 34)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelRam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addComponent(btMontar, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(42, 42, 42))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panelRam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelProcessador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(63, 63, 63)
-                .addComponent(btMontar, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
-        );
+        c = new java.awt.GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 1;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        PanelPrincipal.add(panelMontar, c);
 
-        jScrollPane2.setViewportView(jPanel1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
+        
+        getContentPane().add(PanelPrincipal);
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void btMontarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMontarActionPerformed
-        computador.set("placaDeVideo", getItem(PlacasDeVideo, cbPlacaDeVideo));
-        computador.set("processador", getItem(Processadores, cbProcessador));
-        computador.set("placaMae", getItem(PlacasMae, cbPlacaMae));
-        computador.set("ram", getItem(RAMS, cbRAM));
-        computador.atualizarGeracao(); 
+    }
+    
+    private void montarPc() {
+        for (ConjuntoPeca conjunto : conjuntosPecas) {
+            computador.set(conjunto.getChave(), getItem(conjunto));
+        }
         this.dispose();
-    }//GEN-LAST:event_btMontarActionPerformed
+    }
 
-    private void cbProcessadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProcessadorActionPerformed
-        imgProcessador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/" + getImage(Processadores, cbProcessador))));
-    }//GEN-LAST:event_cbProcessadorActionPerformed
-
-    private void cbRAMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRAMActionPerformed
-        imgRAM.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/" + getImage(RAMS, cbRAM))));
-    }//GEN-LAST:event_cbRAMActionPerformed
-
-    private void cbPlacaMaeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPlacaMaeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbPlacaMaeActionPerformed
-
-    private void cbPlacaDeVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPlacaDeVideoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbPlacaDeVideoActionPerformed
-
-    public static Item getItem(ArrayList<Item> lista, javax.swing.JComboBox<String> comboBox){
-        if(comboBox.getItemCount() > 0){
-            return lista.get(comboBox.getSelectedIndex());
+    public static Item getItem(ConjuntoPeca conjunto){
+        if(conjunto.getComboBox().getItemCount() > 0){
+            return conjunto.getInventario().get(conjunto.getComboBox().getSelectedIndex());
         }
         return null;
     }
-    public static String getImage(ArrayList<Item> lista, javax.swing.JComboBox<String> comboBox) {
-        if(comboBox.getItemCount() > 0){
-            return lista.get(comboBox.getSelectedIndex()).getCaminhoImagem() + ".png";
+    public static String getImage(ConjuntoPeca conjunto) {
+        
+        JComboBox cb = conjunto.getComboBox();
+        if(cb.getItemCount() > 0){
+            return "/main/resources/images/" + conjunto.getInventario().get(cb.getSelectedIndex()).getCaminhoImagem() + ".png";
         }
         return "/main/resources/images/Sem imagem.png";
     }
     
-    private static void registrarItems(ArrayList<Item> lista, Item itemAtual, javax.swing.JComboBox<String> comboBox){
+    private static void registrarItems(ConjuntoPeca conjunto, Item itemAtual){
+        ArrayList<Item> lista = conjunto.getInventario();
+        JComboBox comboBox = conjunto.getComboBox();
         if(!lista.isEmpty()){ // Só registra se existe itens para serem registrados
             for(Item item:lista){ // Repete para cada peca da lista
                 comboBox.addItem(item.getNome()); // Adiciona a peca no comboBox
@@ -323,7 +134,6 @@ public class Gabinete extends javax.swing.JFrame {
             return;
         }
         
-        
         for (int i = 0; i < comboBox.getItemCount(); i++){
             if (itemAtual.getNome().equals(comboBox.getItemAt(i))){
                 comboBox.setSelectedIndex(i);
@@ -332,26 +142,9 @@ public class Gabinete extends javax.swing.JFrame {
         }
     }
     
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btMontar;
-    private javax.swing.JComboBox<String> cbPlacaDeVideo;
-    private javax.swing.JComboBox<String> cbPlacaMae;
-    private javax.swing.JComboBox<String> cbProcessador;
-    private javax.swing.JComboBox<String> cbRAM;
-    private javax.swing.JLabel imgPlacaDeVideo;
-    private javax.swing.JLabel imgPlacaMae;
-    private javax.swing.JLabel imgProcessador;
-    private javax.swing.JLabel imgRAM;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPanel panelProcessador;
-    private javax.swing.JPanel panelRam;
-    // End of variables declaration//GEN-END:variables
+    private void atualizarImagemLabel(ConjuntoPeca conjunto, int largura, int altura){
+        URL caminho = getClass().getResource(getImage(conjunto));
+        Image imagem = new javax.swing.ImageIcon(caminho).getImage().getScaledInstance(largura, altura, Image.SCALE_DEFAULT);
+        conjunto.getLabel().setIcon(new javax.swing.ImageIcon(imagem));
+    }
 }

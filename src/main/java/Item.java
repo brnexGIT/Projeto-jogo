@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -17,6 +16,21 @@ public class Item {
     private Image imagem = null;
     private javax.swing.JButton botao;
 
+    
+    public Item(String nome, int custo, int poder, int poderSecundario, int poderTerciario, String caminhoImagem) {
+        this.nome = nome;
+        this.custo = custo;
+        this.poder = poder;
+        this.botao = null;
+        this.caminhoImagem = caminhoImagem;
+        
+        try {
+            imagem = ImageIO.read(getClass().getResource("/main/resources/images/" + caminhoImagem + ".png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.WARNING, "Erro ao carregar imagem", ex);
+        }
+    
+    }
     
     public Item(String nome, int custo, int poder, String caminhoImagem) {
         this.nome = nome;
@@ -52,14 +66,6 @@ public class Item {
     
     public int getPoder() {
         return poder;
-    }
-
-    public JButton getBotao() {
-        return botao;
-    }
-
-    public void setBotao(JButton botao) {
-        this.botao = botao;
     }
 
     public Image getImagem() {
