@@ -2,13 +2,19 @@ package main.java;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -134,17 +140,14 @@ public class Interface extends JFrame {
         
         
         // Define os itens da loja
-        processadorLoja = new Item[0];
-        placaVideoLoja = new Item[0];
-        placaMaeLoja = new Item[0];
-        ramLoja = new Item[3];
-        ramLoja[0] = ConstrutorPecasPadrao.RAM("DDR3 2GB", 10, 1);
-        ramLoja[1] = ConstrutorPecasPadrao.RAM("DDR3 4GB", 20, 2);
-        ramLoja[2] = ConstrutorPecasPadrao.RAM("DDR3 8GB", 50, 4);
-        gabineteLoja = new Item[0];
-        monitorLoja = new Item[0];
-        tecladoLoja = new Item[0];
-        mouseLoja = new Item[0];
+        processadorLoja = carregarItemCSV("");
+        placaVideoLoja = carregarItemCSV("");
+        placaMaeLoja = carregarItemCSV("");
+        ramLoja = carregarItemCSV("");
+        gabineteLoja = carregarItemCSV("");
+        monitorLoja = carregarItemCSV("");
+        tecladoLoja = carregarItemCSV("");
+        mouseLoja = carregarItemCSV("");
         
         // Cria os conjuntos das lojas
         // só vai ser populado com as partes gráficas durante o "initComponents()"
@@ -515,6 +518,42 @@ public class Interface extends JFrame {
     
     public Icon carregarImagem(String caminho, int largura, int altura) throws IOException{
         return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")));
+    }
+
+    private Item[] carregarItemCSV(String caminho) {
+        // Cria como arraylist pois não sabemos quantos itens terá
+        ArrayList<Item> itens = new ArrayList<>();
+        
+        // Tenta criar o leitor de arquivos
+        try (BufferedReader br = new BufferedReader(new FileReader("/main/resources/" + caminho))) {
+            // Continua enquanto tiver uma próxima linha
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    String[] partes = line.split(";");
+                    // Joga um erro caso o não tenha 4 elementos
+                    if (partes.length != 4) {
+                        throw new Exception("Tamanho invalido");
+                    }
+                    // Tenta cria o novo item e adicionar ao ArrayList
+                    // caso um dos valores não esteja formatado corretamente irá jogar um erro
+                    itens.add(ConstrutorPecasPadrao.Item(partes[0], Integer.parseInt(partes[1]), Integer.parseInt(partes[2]), partes[3]));
+                } catch (Exception ex) {
+                    Logger.getLogger(Interface.class.getName()).log(Level.WARNING, "Item invalido", ex);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, "Arquivo " + caminho + " não encontrado", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, "Não foi possível abrir o arquivo " + caminho, ex);
+        }
+        
+        // Converte o ArraList em array comum antes de retornar
+        Item[] itensArray = new Item[itens.size()];
+        for (int i = 0; i < itens.size(); i++) {
+            itensArray[i] = itens.get(i);
+        }
+        return itensArray;
     }
     
     private void comprar(Item item, ArrayList lista, JButton botao) {
