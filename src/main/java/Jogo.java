@@ -61,8 +61,6 @@ public class Jogo {
         // Inicia as skills
         habilidadeAtiva = new Habilidade(100, 10, 10);
         habilidadePassiva = new Habilidade(100, 10, 30);
-        
-        
     }
     
     private void carregarItensCSV(HashMap<String, ArrayList<Item>> itens, String caminho) {

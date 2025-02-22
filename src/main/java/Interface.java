@@ -34,7 +34,6 @@ public class Interface extends JFrame {
     private final Runnable gameCycle;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
-    
     private AbaLoja[] lojas;
     private Font fonte;
     private JTabbedPane gerenciadorAbasPrincipais;
@@ -65,8 +64,7 @@ public class Interface extends JFrame {
             private JLabel txtDinheiroLoja;
             private JTabbedPane gerenciadorAbasPecas;
     
-    
-    
+            
     public Interface() {
         // Inicia o jogo
         jogo = new Jogo("itens");
@@ -240,7 +238,6 @@ public class Interface extends JFrame {
         gerenciadorAbasPrincipais.addTab("LOJA", AbaLoja);
         
         
-        
         // Aba do computador
         abaPC.setLayout(new GridBagLayout());
         abaPC.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -411,15 +408,6 @@ public class Interface extends JFrame {
         return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")));
     }
 
-    
-    
-    private Item[] ItemArrayListParaArray(ArrayList<Item> lista) {
-        Item[] itensArray = new Item[lista.size()];
-        for (int i = 0; i < lista.size(); i++) {
-            itensArray[i] = lista.get(i);
-        }
-        return itensArray;
-    }
     
     private Font carregarFonte(String caminho){
         GraphicsEnvironment ge =  GraphicsEnvironment.getLocalGraphicsEnvironment();
