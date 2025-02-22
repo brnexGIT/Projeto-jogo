@@ -8,24 +8,24 @@ import java.util.ArrayList;
 
 public class TrocarPeca extends javax.swing.JFrame {
     Computador computador;
-    ArrayList<Item> lista;
+    ArrayList<Item> itens;
     String nomePeca;
-    private final Interface jogo;
+    private final Interface interfacePrincipal;
     
-    public TrocarPeca(Interface jogo, ArrayList<Item> lista, Computador computador, String nomePeca) {
-        this.computador = computador;
-        this.lista = lista;
+    public TrocarPeca(Interface interfacePrincipal, Jogo jogo, String nomePeca) {
+        this.computador = jogo.computador;
+        this.itens = jogo.itens.get(nomePeca);
         this.nomePeca = nomePeca;
-        this.jogo = jogo;
+        this.interfacePrincipal = interfacePrincipal;
         
         initComponents();
         
         // Se possúi menos de dois items na lista fecha a janela imediatamente
-        if(lista.size() < 2){
+        if(itens.size() < 2){
             dispose();
         }
         
-        for(Item item:lista){ // Repete para cada peca da lista
+        for(Item item:itens){ // Repete para cada peca da lista
             comboBox.addItem(item.getNome()); // Adiciona a peca no comboBox
         }
         
@@ -100,17 +100,32 @@ public class TrocarPeca extends javax.swing.JFrame {
     private void btConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConfirmarActionPerformed
         // Tenta trocar a peça no computador
         try {
-            computador.set(nomePeca, lista.get(comboBox.getSelectedIndex()));
+            Item peca = pecaSelecionada();
+            if (peca == null) {
+                throw new IndexOutOfBoundsException();
+            }
+            computador.set(nomePeca, peca);
         } catch (IndexOutOfBoundsException ex) {
             return;
         }
         computador.atualizarClique();
         computador.atualizarGeracao();
-        jogo.atualizarImagens();
+        interfacePrincipal.atualizarImagens();
         dispose();
         
     }//GEN-LAST:event_btConfirmarActionPerformed
 
+    private Item pecaSelecionada() {
+        String nome = comboBox.getSelectedItem().toString();
+        System.out.println(nome);
+        for (Item item : itens) {
+            if (item.getNome().equals(nome)) {
+                return item;
+            }
+        }
+        return null;
+    }
+    
     private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
         dispose();
     }//GEN-LAST:event_btCancelarActionPerformed
@@ -120,7 +135,7 @@ public class TrocarPeca extends javax.swing.JFrame {
         // Atualiza a imagem carregada
         String caminho = "/main/resources/images/Sem imagem";
         if(comboBox.getItemCount() > 0){
-            caminho = lista.get(comboBox.getSelectedIndex()).getCaminhoImagem();
+            caminho = pecaSelecionada().getCaminhoImagem();
         }
         labelImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/main/resources/images/" + caminho + ".png")));
     }//GEN-LAST:event_comboBoxActionPerformed

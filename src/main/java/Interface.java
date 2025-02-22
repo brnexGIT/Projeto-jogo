@@ -5,13 +5,8 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JOptionPane;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
@@ -35,40 +29,14 @@ import javax.swing.UIManager;
 @SuppressWarnings("FieldMayBeFinal")
 public class Interface extends JFrame {
 
-    int dinheiro = 50000000;
-    
-    public Computador computador;
-    private HashMap<String, Boolean> jaVisto;
+    private Jogo jogo;
     private long ultimoFrame = System.currentTimeMillis(); 
-    private Habilidade habilidadeAtiva;
-    private Habilidade habilidadePassiva;
     private final Runnable gameCycle;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
     
-    private ArrayList<Item> processadorTem;
-    private ArrayList<Item> placaVideoTem;
-    private ArrayList<Item> placaMaeTem;
-    private ArrayList<Item> ramTem;
-    private ArrayList<Item> gabineteTem;
-    private ArrayList<Item> monitorTem;
-    private ArrayList<Item> tecladoTem;
-    private ArrayList<Item> mouseTem;
-    
-    
-    private final Item[] processadorLoja;
-    private final Item[] placaVideoLoja;
-    private final Item[] placaMaeLoja;
-    private final Item[] ramLoja;
-    private final Item[] gabineteLoja;
-    private final Item[] monitorLoja;
-    private final Item[] tecladoLoja;
-    private final Item[] mouseLoja;
-    
-    private ConjuntoLoja[] lojas;
-    
+    private AbaLoja[] lojas;
     private Font fonte;
-    
     private JTabbedPane gerenciadorAbasPrincipais;
         private JPanel abaTrabalho;
             private JPanel panelDinheiro;
@@ -100,71 +68,8 @@ public class Interface extends JFrame {
     
     
     public Interface() {
-        // Inicia jaVisto
-        jaVisto = new HashMap<>();
-        String[] nomesDicas = {"Trabalho", "Loja", "PC"};
-        for (String nome : nomesDicas) {
-            jaVisto.put(nome, false);
-        }
-        
-        // Inicia as skills
-        habilidadeAtiva = new Habilidade(100, 10, 10);
-        habilidadePassiva = new Habilidade(100, 10, 30);
-        
-        
-        // Cria o invetário das peças
-        processadorTem = new ArrayList<>();
-        placaVideoTem = new ArrayList<>();
-        placaMaeTem = new ArrayList<>();
-        ramTem = new ArrayList<>();
-        gabineteTem = new ArrayList<>();
-        monitorTem = new ArrayList<>();
-        tecladoTem = new ArrayList<>();
-        mouseTem = new ArrayList<>();
-        
-        
-        // Cria o computador e dá as peças iniciais
-        processadorTem.add(new Item("Processador ancestral", 0, 0, "processador/antigo"));
-        placaVideoTem.add(new Item("Placa de imagem", 0, 0, "placadevideo/antigo"));
-        placaMaeTem.add(new Item("Placa avó", 0, 0, "PlacaMae/antigo"));
-        ramTem.add(new Item("Ram sem memória", 0, 0, "ram/antigo"));
-        gabineteTem.add(new Item("Gabinete do lixo", 0, 100, "gabinete/antigo"));
-        monitorTem.add(new Item("Monitor pré-histórico", 0, 100, "monitor/antigo"));
-        tecladoTem.add(new Item("Teclado peba", 0, 0, "teclado/antigo"));
-        mouseTem.add(new Item("Mouse arcaíco", 0, 1, "mouse/antigo"));
-        
-        computador = new Computador(
-                processadorTem.get(0), 
-                placaVideoTem.get(0), 
-                placaMaeTem.get(0), 
-                ramTem.get(0), 
-                gabineteTem.get(0), 
-                monitorTem.get(0), 
-                tecladoTem.get(0), 
-                mouseTem.get(0));
-        
-        
-        // Define os itens da loja
-        processadorLoja = ItemArrayListParaArray(carregarItemCSV(""));
-        placaVideoLoja = ItemArrayListParaArray(carregarItemCSV(""));
-        placaMaeLoja = ItemArrayListParaArray(carregarItemCSV(""));
-        ramLoja = ItemArrayListParaArray(carregarItemCSV("loja/ram"));
-        gabineteLoja = ItemArrayListParaArray(carregarItemCSV("loja/gabinete"));
-        monitorLoja = ItemArrayListParaArray(carregarItemCSV("loja/monitor"));
-        tecladoLoja = ItemArrayListParaArray(carregarItemCSV("loja/teclado"));
-        mouseLoja = ItemArrayListParaArray(carregarItemCSV("loja/mouse"));
-        
-        // Cria os conjuntos das lojas
-        // só vai ser populado com as partes gráficas durante o "initComponents()"
-        lojas = new ConjuntoLoja[8];
-        lojas[0] = new ConjuntoLoja("Processadores", processadorTem, processadorLoja);
-        lojas[1] = new ConjuntoLoja("Placas de vídeo", placaVideoTem, placaVideoLoja);
-        lojas[2] = new ConjuntoLoja("Placas mãe", placaMaeTem, placaMaeLoja);
-        lojas[3] = new ConjuntoLoja("RAMs", ramTem, ramLoja);
-        lojas[4] = new ConjuntoLoja("Gabinetes", gabineteTem, gabineteLoja);
-        lojas[5] = new ConjuntoLoja("Monitores", monitorTem, monitorLoja);
-        lojas[6] = new ConjuntoLoja("Teclados", tecladoTem, tecladoLoja);
-        lojas[7] = new ConjuntoLoja("Mouses", mouseTem, mouseLoja);
+        // Inicia o jogo
+        jogo = new Jogo("itens");
         
         // Carrega a fonte que vai ser usada para tudo
         fonte = carregarFonte("Roboto-ExtraBold.ttf");
@@ -187,9 +92,9 @@ public class Interface extends JFrame {
             int milisegundosSobrando = (int) (deltaT % 1000);
             
             
-            long geracao = (long) (computador.getGeracao() * habilidadePassiva.getPoder() * deltaTSegundos);
+            long geracao = (long) (jogo.computador.getGeracao() * jogo.habilidadePassiva.getPoder() * deltaTSegundos);
             
-            dinheiro += geracao;
+            jogo.dinheiro += geracao;
             
             ultimoFrame = System.currentTimeMillis() - milisegundosSobrando;
         };
@@ -221,16 +126,6 @@ public class Interface extends JFrame {
             AbaLoja = new JPanel();
                 txtDinheiroLoja = new JLabel();
                 gerenciadorAbasPecas = new JTabbedPane();
-                    for (ConjuntoLoja loja : lojas) {
-                        loja.setAba(new JScrollPane());
-                        loja.setPanel(new JPanel());
-                        // Cria os botões;
-                        var botoes = new JButton[loja.getLoja().length];
-                        for (int i = 0; i < botoes.length; i++) {
-                            botoes[i] = new JButton();
-                        }
-                        loja.setBotoes(botoes);
-                    }
             abaPC = new JPanel();
                 labelMonitor = new JLabel();
                 labelTeclado = new JLabel();
@@ -304,12 +199,12 @@ public class Interface extends JFrame {
         btHabilidadeAtiva.setFont(fonte);
         btHabilidadeAtiva.setText("Ativar");
         btHabilidadeAtiva.addActionListener((java.awt.event.ActionEvent evt) -> {
-            habilidadeAtiva.usar(ultimoFrame);
+            jogo.habilidadeAtiva.usar(ultimoFrame);
         });
         btHabilidadePassiva.setFont(fonte);
         btHabilidadePassiva.setText("Ativar");
         btHabilidadePassiva.addActionListener((java.awt.event.ActionEvent evt) -> {
-            habilidadePassiva.usar(ultimoFrame);
+            jogo.habilidadePassiva.usar(ultimoFrame);
         });
         
         panelHabilidadeAtiva.add(btHabilidadeAtiva, c);
@@ -333,29 +228,13 @@ public class Interface extends JFrame {
         txtDinheiroLoja.setText("Dinheiro: 0");
         AbaLoja.add(txtDinheiroLoja);
 
-          // Loopa por todas as abas da loja criando ela e seus botões
-        for (var loja : lojas) {
-            ArrayList<Item> tem = loja.getTem();
-            Item[] lojaInventario = loja.getLoja();
-            JScrollPane aba = loja.getAba();
-            JPanel panel = loja.getPanel();
-            JButton[] bts = loja.getBotoes();
-            
-            aba.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            panel.setLayout(new WrapLayout());
-            // Cria botões e coloca função neles
-            for (int i = 0; i < lojaInventario.length; i++) {
-                final int iFinal = i;
-                bts[i] = new JButton();
-                bts[i].setFont(fonte);
-                bts[i].setText(lojaInventario[i].getNome() + " - R$" + lojaInventario[i].getCusto());
-                bts[i].addActionListener((java.awt.event.ActionEvent evt) -> {
-                    comprar(lojaInventario[iFinal], tem, bts[iFinal]);
-                });
-                panel.add(bts[i]);
-            }
-            aba.setViewportView(panel);
-            gerenciadorAbasPecas.addTab(loja.getNome(), null, aba, "");
+          // Cria as abas da loja
+        lojas = new AbaLoja[8];
+        String[] nomes = new String[] {"Processadores", "Placas de vídeo", "Placas mãe", "RAMs", "Gabinetes", "Monitores", "Teclados", "Mouses"};
+        String[] nomesIds = new String[] {"processador", "placaDeVideo", "placaMae", "ram", "gabinete", "monitor", "teclado", "mouse"};
+        for (int i = 0; i < 8; i++){
+            lojas[i] = new AbaLoja(jogo, nomes[i], nomesIds[i], fonte);
+            gerenciadorAbasPecas.addTab(lojas[i].getNome(), null, lojas[i].getAba(), "");
         }
         AbaLoja.add(gerenciadorAbasPecas);
         gerenciadorAbasPrincipais.addTab("LOJA", AbaLoja);
@@ -378,7 +257,7 @@ public class Interface extends JFrame {
         labelMonitor.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                abrirTrocarPeca(monitorTem, "monitor");
+                abrirTrocarPeca("monitor");
             }
         });
           // Propriedades do grid em que reside
@@ -397,7 +276,7 @@ public class Interface extends JFrame {
                 }
                 // Botão esquerdo
                 if(evt.getButton() == 1){
-                    abrirTrocarPeca(gabineteTem, "gabinete");
+                    abrirTrocarPeca("gabinete");
                 }
             }
         });
@@ -411,7 +290,7 @@ public class Interface extends JFrame {
         labelTeclado.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                abrirTrocarPeca(tecladoTem, "teclado");
+                abrirTrocarPeca("teclado");
             }
         });
             // Propriedades do grid em que reside
@@ -426,7 +305,7 @@ public class Interface extends JFrame {
         labelMouse.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                abrirTrocarPeca(mouseTem, "mouse");
+                abrirTrocarPeca("mouse");
             }
         });
             // Propriedades do grid em que reside
@@ -443,77 +322,77 @@ public class Interface extends JFrame {
     }
 
     private void botaoProgramarClique() {
-        dinheiro += computador.getClique() * habilidadeAtiva.getPoder();
+        jogo.dinheiro += jogo.computador.getClique() * jogo.habilidadeAtiva.getPoder();
         atualizarDinheiro();
     }
     
-    private void abrirTrocarPeca(ArrayList<Item> inventario, String nome) {
-        new TrocarPeca(this, inventario, computador, nome).setVisible(true);
+    private void abrirTrocarPeca(String nome) {
+        new TrocarPeca(this, jogo, nome).setVisible(true);
     }
     
     private void abrirGabinete(){
-        new Gabinete(computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
+        new Gabinete(jogo).setVisible(true);
     }
 
     private void AbasPrincipaisStateChanged() {
         if(gerenciadorAbasPrincipais.getSelectedIndex() == 1 ){
-            if (!jaVisto.get("Loja")){
+            if (!jogo.jaVisto.get("Loja")){
                 JOptionPane.showMessageDialog(rootPane, "Esta é a loja\nAqui você pode comprar itens para melhorar seu Setup!");
-                jaVisto.put("Loja", true);
+                jogo.jaVisto.put("Loja", true);
             }
         } else if(gerenciadorAbasPrincipais.getSelectedIndex() == 2){
-            if(!jaVisto.get("PC")){
+            if(!jogo.jaVisto.get("PC")){
                 JOptionPane.showMessageDialog(rootPane, """
                                                         Aqui é seu PC
                                                         Você deve equipar as peças compradas para utilizá-las!
                                                          Botão esquerdo = Altera a peça clicada
                                                         Botão direito no 'gabinete' = Abre o computador para trocar-se os hardwares""");
-                jaVisto.put("PC", true);
+                jogo.jaVisto.put("PC", true);
             }
         }
     }
 
     public void atualizarDinheiro(){
-        String labelText = String.format("Dinheiro: R$%d", dinheiro);
+        String labelText = String.format("Dinheiro: R$%d", jogo.dinheiro);
         txtDinheiro.setText(labelText);
         txtDinheiroLoja.setText(labelText);
-        labelGeracaoClique.setText("Dinheiro p/Clique: " + computador.getClique()*habilidadeAtiva.getPoder());
-        labelGeracaoPassiva.setText("Dinheiro p/s: " + computador.getGeracao()*habilidadePassiva.getPoder());
+        labelGeracaoClique.setText("Dinheiro p/Clique: " + jogo.computador.getClique()*jogo.habilidadeAtiva.getPoder());
+        labelGeracaoPassiva.setText("Dinheiro p/s: " + jogo.computador.getGeracao()*jogo.habilidadePassiva.getPoder());
     }
     
     public final void atualizarPoderHabilidades(){
-        int poderAtiva = computador.get("monitor").getPoder();
-        int poderPassiva = computador.get("gabinete").getPoder();
-        habilidadeAtiva.setPoder(poderAtiva);
-        habilidadePassiva.setPoder(poderPassiva);
+        int poderAtiva = jogo.computador.get("monitor").getPoder();
+        int poderPassiva = jogo.computador.get("gabinete").getPoder();
+        jogo.habilidadeAtiva.setPoder(poderAtiva);
+        jogo.habilidadePassiva.setPoder(poderPassiva);
         labelHabilidadeAtiva.setText("<html>X" + ((float) poderAtiva / 100) + " mult para o clique" +
-                               "<br/>Duração: " + habilidadeAtiva.getDuracao()/1000 + "s" + 
-                               "<br/>Cooldown: " + habilidadeAtiva.getCooldown()/1000 + "s</html>");
+                               "<br/>Duração: " + jogo.habilidadeAtiva.getDuracao()/1000 + "s" + 
+                               "<br/>Cooldown: " + jogo.habilidadeAtiva.getCooldown()/1000 + "s</html>");
         labelHabilidadePassiva.setText("<html>X" + ((float) poderPassiva / 100) + " mult para a geração"+
-                               "<br/>Duração: " + habilidadePassiva.getDuracao()/1000 + "s" + 
-                               "<br/>Cooldown: " + habilidadePassiva.getCooldown()/1000 + "s</html>");
+                               "<br/>Duração: " + jogo.habilidadePassiva.getDuracao()/1000 + "s" + 
+                               "<br/>Cooldown: " + jogo.habilidadePassiva.getCooldown()/1000 + "s</html>");
     }
     
     public void atualizarHabilidades(long momentoAtual){
         // Ativa
-        long duracaoRestante = habilidadeAtiva.tempoQueResta(momentoAtual);
-        long cooldown = habilidadeAtiva.tempoCooldown(momentoAtual);
+        long duracaoRestante = jogo.habilidadeAtiva.tempoQueResta(momentoAtual);
+        long cooldown = jogo.habilidadeAtiva.tempoCooldown(momentoAtual);
         if (duracaoRestante > 0) {
             barraHabilidadeAtiva.setValue((int) duracaoRestante);
-            barraHabilidadeAtiva.setMaximum(habilidadeAtiva.getDuracao());
+            barraHabilidadeAtiva.setMaximum(jogo.habilidadeAtiva.getDuracao());
         } else {
-            barraHabilidadeAtiva.setValue((int)(habilidadeAtiva.getCooldown() - cooldown));
-            barraHabilidadeAtiva.setMaximum(habilidadeAtiva.getCooldown());
+            barraHabilidadeAtiva.setValue((int)(jogo.habilidadeAtiva.getCooldown() - cooldown));
+            barraHabilidadeAtiva.setMaximum(jogo.habilidadeAtiva.getCooldown());
         }
         // Passiva
-        duracaoRestante = habilidadePassiva.tempoQueResta(momentoAtual);
-        cooldown = habilidadePassiva.tempoCooldown(momentoAtual);
+        duracaoRestante = jogo.habilidadePassiva.tempoQueResta(momentoAtual);
+        cooldown = jogo.habilidadePassiva.tempoCooldown(momentoAtual);
         if (duracaoRestante > 0) {
             barraHabilidadePassiva.setValue((int) duracaoRestante);
-            barraHabilidadePassiva.setMaximum(habilidadePassiva.getDuracao());
+            barraHabilidadePassiva.setMaximum(jogo.habilidadePassiva.getDuracao());
         } else {
-            barraHabilidadePassiva.setValue((int)(habilidadePassiva.getCooldown() - cooldown));
-            barraHabilidadePassiva.setMaximum(habilidadePassiva.getCooldown());
+            barraHabilidadePassiva.setValue((int)(jogo.habilidadePassiva.getCooldown() - cooldown));
+            barraHabilidadePassiva.setMaximum(jogo.habilidadePassiva.getCooldown());
         }
     }
     
@@ -522,50 +401,17 @@ public class Interface extends JFrame {
         // Pequeno e grande
         int p = tamanho / 3;
         int g = p * 2;
-        labelGabinete.setIcon(computador.get("gabinete").getIcon(p, g));
-        labelMonitor.setIcon(computador.get("monitor").getIcon(g, g));
-        labelTeclado.setIcon(computador.get("teclado").getIcon(g, p));
-        labelMouse.setIcon(computador.get("mouse").getIcon(p, p));
+        labelGabinete.setIcon(jogo.computador.get("gabinete").getIcon(p, g));
+        labelMonitor.setIcon(jogo.computador.get("monitor").getIcon(g, g));
+        labelTeclado.setIcon(jogo.computador.get("teclado").getIcon(g, p));
+        labelMouse.setIcon(jogo.computador.get("mouse").getIcon(p, p));
     }
     
     public Icon carregarImagem(String caminho, int largura, int altura) throws IOException{
         return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")));
     }
 
-    private ArrayList<Item> carregarItemCSV(String caminho) {
-        // Cria como arraylist pois não sabemos quantos itens terá
-        ArrayList<Item> itens = new ArrayList<>();
-        
-        // Tenta criar o leitor de arquivos
-        URL arquivo = getClass().getResource("/main/resources/csvs/" + caminho + ".csv");
-        if (arquivo == null) {
-            return itens;
-        }
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(arquivo.openStream()))) {
-            // Continua enquanto tiver uma próxima linha
-            String line;
-            while ((line = br.readLine()) != null) {
-                try {
-                    String[] partes = line.split(";");
-                    // Joga um erro caso o não tenha 4 elementos
-                    if (partes.length != 4) {
-                        throw new ArrayIndexOutOfBoundsException("Tamanho invalido");
-                    }
-                    // Tenta cria o novo item e adicionar ao ArrayList
-                    // caso um dos valores não esteja formatado corretamente irá jogar um erro
-                    itens.add(new Item(partes[0], Integer.parseInt(partes[1]), Integer.parseInt(partes[2]), partes[3]));
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
-                    Logger.getLogger(Interface.class.getName()).log(Level.WARNING, "Item invalido", ex);
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, "Arquivo " + caminho + " não encontrado", ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, "Não foi possível abrir o arquivo " + caminho, ex);
-        }
-        
-        return itens;
-    }
+    
     
     private Item[] ItemArrayListParaArray(ArrayList<Item> lista) {
         Item[] itensArray = new Item[lista.size()];
@@ -586,14 +432,6 @@ public class Interface extends JFrame {
             Logger.getLogger(Interface.class.getName()).log(Level.WARNING, null, ex);
         }
         return fonteCarregada.deriveFont(0, 14);
-    }
-    
-    private void comprar(Item item, ArrayList lista, JButton botao) {
-        if (dinheiro >= item.getCusto()){
-            dinheiro -= item.getCusto();
-            botao.setVisible(false);
-            lista.add(item);
-        }
     }
     
     public static void main(String args[]) {

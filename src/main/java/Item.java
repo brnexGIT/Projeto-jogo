@@ -6,37 +6,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 public class Item {
+    private int id;
     private final String nome;
     private final int custo;
     private final int poder;
     private final String caminhoImagem;
     private Image imagem = null;
-    private javax.swing.JButton botao;
+    private boolean possuido;
 
     
-    public Item(String nome, int custo, int poder, int poderSecundario, int poderTerciario, String caminhoImagem) {
+    public Item(int id, String nome, int custo, int poder, String caminhoImagem, boolean possuido) {
+        this.id = id;
         this.nome = nome;
         this.custo = custo;
         this.poder = poder;
-        this.botao = null;
-        this.caminhoImagem = caminhoImagem;
-        
-        try {
-            imagem = ImageIO.read(getClass().getResource("/main/resources/images/" + caminhoImagem + ".png"));
-        } catch (IOException ex) {
-            Logger.getLogger(Item.class.getName()).log(Level.WARNING, "Erro ao carregar imagem", ex);
-        }
-    
-    }
-    
-    public Item(String nome, int custo, int poder, String caminhoImagem) {
-        this.nome = nome;
-        this.custo = custo;
-        this.poder = poder;
-        this.botao = null;
+        this.possuido = possuido;
         this.caminhoImagem = caminhoImagem;
         
         try {
@@ -70,6 +56,14 @@ public class Item {
 
     public Image getImagem() {
         return imagem;
+    }
+
+    public boolean isPossuido() {
+        return possuido;
+    }
+
+    public void setPossuido(boolean possuido) {
+        this.possuido = possuido;
     }
 
     public void setImagem(Image imagem) {

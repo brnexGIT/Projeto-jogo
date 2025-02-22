@@ -1,0 +1,27 @@
+0;processador;Processador ancestral;0;0;processador/antigo;true
+1;placaDeVideo;Placa de imagem;0;0;placadevideo/antigo;true
+2;placaMae;Placa mãe;0;0;PlacaMae/antigo;true
+3;ram;Ram sem memória;0;0;ram/antigo;true
+4;gabinete;Gabinete do lixo;0;100;gabinete/antigo;true
+5;monitor;Monitor pré-histórico;0;100;monitor/antigo;true
+6;teclado;Teclado peba;0;0;teclado/antigo;true
+7;mouse;Mouse arcaíco;0;1;mouse/antigo;true
+8;gabinete;Antigo;100;5;gabinete/astethics 1;false
+9;gabinete;Diferente dos demais;300;5;gabinete/emo 2;false
+10;gabinete;Com LUZINHA;1000;5;gabinete/vagalume 3;false
+11;gabinete;O optimus prime;5000;5;gabinete/escoliose 4;false
+12;teclado;Tecl...;100;20;teclado/projeto de algo;false
+13;teclado;Teclado base;300;40;teclado/escritorio clt;false
+14;teclado;Teclado gamer;1500;50;teclado/gamer;false
+15;teclado;Teclado GAMER 2000;10000;100;teclado/dragao ball xl;false
+16;ram;DDR3 2GB;10;1;ram/antigo;false
+17;ram;DDR3 4GB;20;2;ram/antigo;false
+18;ram;DDR3 8GB;50;4;ram/antigo;false
+19;mouse;Yellow jaqueta;100;5;mouse/gamer;false
+20;mouse;Dragon ball;5000;30;mouse/dragonball;false
+21;mouse;Hotwheels ataque do shark;10000;50;mouse/shark attack;false
+22;mouse;Mouse Gamer;100000;100;mouse/clicador 2000;false
+23;monitor;Monitor Inicial ;100;0;monitor/positivo capitao;false
+24;monitor;Monitor de Trablho;200;0;monitor/clt;false
+25;monitor;Monitor LG;300;0;monitor/LGbt;false
+26;monitor;Monitor Ultra Wide;400;0;monitor/ultra whinderson;false

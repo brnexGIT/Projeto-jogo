@@ -3,7 +3,6 @@ package main.java;
 import java.awt.Image;
 import java.net.URL;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -18,16 +17,15 @@ public class Gabinete extends javax.swing.JFrame {
         private javax.swing.JPanel panelMontar;
             private javax.swing.JButton btMontar;
 
-    public Gabinete(Computador computador,
-            ArrayList<Item> Processadores, ArrayList<Item> PlacasDeVideo, ArrayList<Item> PlacasMae, ArrayList<Item> RAMS) {
+    public Gabinete(Jogo jogo) {
         
-        this.computador = computador;
+        computador = jogo.computador;
         
         conjuntosPecas = new ConjuntoPeca[4];
-        conjuntosPecas[0] = new ConjuntoPeca("Processador", "processador", Processadores);
-        conjuntosPecas[1] = new ConjuntoPeca("Placa de video", "placaDeVideo", PlacasDeVideo);
-        conjuntosPecas[2] = new ConjuntoPeca("Placa Mãe", "placaMae", PlacasMae);
-        conjuntosPecas[3] = new ConjuntoPeca("RAM", "ram", RAMS);
+        conjuntosPecas[0] = new ConjuntoPeca("Processador", "processador", jogo.itens.get("processador"));
+        conjuntosPecas[1] = new ConjuntoPeca("Placa de video", "placaDeVideo", jogo.itens.get("placaDeVideo"));
+        conjuntosPecas[2] = new ConjuntoPeca("Placa Mãe", "placaMae", jogo.itens.get("placaMae"));
+        conjuntosPecas[3] = new ConjuntoPeca("RAM", "ram", jogo.itens.get("ram"));
         
         initComponents();
     }
