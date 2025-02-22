@@ -1,12 +1,15 @@
 package main.java;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
@@ -64,6 +67,8 @@ public class Interface extends JFrame {
     
     private ConjuntoLoja[] lojas;
     
+    private Font fonte;
+    
     private JTabbedPane gerenciadorAbasPrincipais;
         private JPanel abaTrabalho;
             private JPanel panelDinheiro;
@@ -119,14 +124,14 @@ public class Interface extends JFrame {
         
         
         // Cria o computador e dá as peças iniciais
-        processadorTem.add(ConstrutorPecasPadrao.Item("Processador ancestral", 0, 0, "processador/antigo"));
-        placaVideoTem.add(ConstrutorPecasPadrao.Item("Placa de imagem", 0, 0, "placadevideo/antigo"));
-        placaMaeTem.add(ConstrutorPecasPadrao.Item("Placa avó", 0, 0, "PlacaMae/antigo"));
-        ramTem.add(ConstrutorPecasPadrao.Item("Ram sem memória", 0, 0, "ram/antigo"));
-        gabineteTem.add(ConstrutorPecasPadrao.Item("Gabinete do lixo", 0, 100, "gabinete/antigo"));
-        monitorTem.add(ConstrutorPecasPadrao.Item("Monitor pré-histórico", 0, 100, "monitor/antigo"));
-        tecladoTem.add(ConstrutorPecasPadrao.Item("Teclado peba", 0, 0, "teclado/antigo"));
-        mouseTem.add(ConstrutorPecasPadrao.Item("Mouse arcaíco", 0, 2, "mouse/antigo"));
+        processadorTem.add(new Item("Processador ancestral", 0, 0, "processador/antigo"));
+        placaVideoTem.add(new Item("Placa de imagem", 0, 0, "placadevideo/antigo"));
+        placaMaeTem.add(new Item("Placa avó", 0, 0, "PlacaMae/antigo"));
+        ramTem.add(new Item("Ram sem memória", 0, 0, "ram/antigo"));
+        gabineteTem.add(new Item("Gabinete do lixo", 0, 100, "gabinete/antigo"));
+        monitorTem.add(new Item("Monitor pré-histórico", 0, 100, "monitor/antigo"));
+        tecladoTem.add(new Item("Teclado peba", 0, 0, "teclado/antigo"));
+        mouseTem.add(new Item("Mouse arcaíco", 0, 1, "mouse/antigo"));
         
         computador = new Computador(
                 processadorTem.get(0), 
@@ -140,14 +145,14 @@ public class Interface extends JFrame {
         
         
         // Define os itens da loja
-        processadorLoja = carregarItemCSV("");
-        placaVideoLoja = carregarItemCSV("");
-        placaMaeLoja = carregarItemCSV("");
-        ramLoja = carregarItemCSV("");
-        gabineteLoja = carregarItemCSV("");
-        monitorLoja = carregarItemCSV("");
-        tecladoLoja = carregarItemCSV("");
-        mouseLoja = carregarItemCSV("");
+        processadorLoja = ItemArrayListParaArray(carregarItemCSV(""));
+        placaVideoLoja = ItemArrayListParaArray(carregarItemCSV(""));
+        placaMaeLoja = ItemArrayListParaArray(carregarItemCSV(""));
+        ramLoja = ItemArrayListParaArray(carregarItemCSV("loja/ram"));
+        gabineteLoja = ItemArrayListParaArray(carregarItemCSV("loja/gabinete"));
+        monitorLoja = ItemArrayListParaArray(carregarItemCSV("loja/monitor"));
+        tecladoLoja = ItemArrayListParaArray(carregarItemCSV("loja/teclado"));
+        mouseLoja = ItemArrayListParaArray(carregarItemCSV("loja/mouse"));
         
         // Cria os conjuntos das lojas
         // só vai ser populado com as partes gráficas durante o "initComponents()"
@@ -161,6 +166,8 @@ public class Interface extends JFrame {
         lojas[6] = new ConjuntoLoja("Teclados", tecladoTem, tecladoLoja);
         lojas[7] = new ConjuntoLoja("Mouses", mouseTem, mouseLoja);
         
+        // Carrega a fonte que vai ser usada para tudo
+        fonte = carregarFonte("Roboto-ExtraBold.ttf");
         
         // Inicia os componentes gráfico
         initComponents();
@@ -239,14 +246,14 @@ public class Interface extends JFrame {
 
         // Fica de olho quando o usuário troca de aba
         gerenciadorAbasPrincipais.addChangeListener((javax.swing.event.ChangeEvent evt) -> {
-            AbasPrincipaisStateChanged(evt);
+            AbasPrincipaisStateChanged();
         });
 
         // Aba principal "Área de trabalho"
         abaTrabalho.setLayout(new java.awt.GridLayout(0, 1));
 
           // Contador de dinheiro
-        txtDinheiro.setFont(new java.awt.Font("DejaVu Serif Condensed", 0, 14)); // NOI18N
+        txtDinheiro.setFont(fonte.deriveFont(0, 18));
         txtDinheiro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtDinheiro.setText("Dinheiro: 0");
         panelDinheiro.add(txtDinheiro);
@@ -254,6 +261,8 @@ public class Interface extends JFrame {
 
           // Geração
         panelGeracoes.setLayout(new java.awt.GridLayout(1, 0));
+        labelGeracaoClique.setFont(fonte);
+        labelGeracaoPassiva.setFont(fonte);
         labelGeracaoClique.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelGeracaoPassiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         panelGeracoes.add(labelGeracaoClique);
@@ -262,9 +271,10 @@ public class Interface extends JFrame {
 
           // Botão de dinheiro
         botaoDinheiro.setBackground(new java.awt.Color(153, 255, 51));
+        botaoDinheiro.setFont(fonte);
         botaoDinheiro.setText("Programar");
         botaoDinheiro.addActionListener((java.awt.event.ActionEvent evt) -> {
-            botaoDinheiroActionPerformed(evt);
+            botaoProgramarClique();
         });
         panelProgramar.add(botaoDinheiro);
         abaTrabalho.add(panelProgramar);
@@ -280,19 +290,23 @@ public class Interface extends JFrame {
             // Labels
         c.gridy = 1;
         c.gridheight = 3;
+        labelHabilidadeAtiva.setFont(fonte);
         labelHabilidadeAtiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelHabilidadeAtiva.setPreferredSize(new Dimension(150, 60));
+        labelHabilidadeAtiva.setPreferredSize(new Dimension(250, 80));
         panelHabilidadeAtiva.add(labelHabilidadeAtiva, c);
+        labelHabilidadePassiva.setFont(fonte);
         labelHabilidadePassiva.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelHabilidadePassiva.setPreferredSize(new Dimension(150, 60));
+        labelHabilidadePassiva.setPreferredSize(new Dimension(250, 80));
         panelHabilidadePassiva.add(labelHabilidadePassiva, c);
             // Botões
         c.gridheight = 1;
         c.gridy = 4;
+        btHabilidadeAtiva.setFont(fonte);
         btHabilidadeAtiva.setText("Ativar");
         btHabilidadeAtiva.addActionListener((java.awt.event.ActionEvent evt) -> {
             habilidadeAtiva.usar(ultimoFrame);
         });
+        btHabilidadePassiva.setFont(fonte);
         btHabilidadePassiva.setText("Ativar");
         btHabilidadePassiva.addActionListener((java.awt.event.ActionEvent evt) -> {
             habilidadePassiva.usar(ultimoFrame);
@@ -314,7 +328,7 @@ public class Interface extends JFrame {
         // Aba da Loja
         AbaLoja.setLayout(new BoxLayout(AbaLoja, BoxLayout.Y_AXIS));
 
-        txtDinheiroLoja.setFont(new java.awt.Font("DejaVu Serif Condensed", 0, 14)); // NOI18N
+        txtDinheiroLoja.setFont(fonte); 
         txtDinheiroLoja.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtDinheiroLoja.setText("Dinheiro: 0");
         AbaLoja.add(txtDinheiroLoja);
@@ -333,6 +347,7 @@ public class Interface extends JFrame {
             for (int i = 0; i < lojaInventario.length; i++) {
                 final int iFinal = i;
                 bts[i] = new JButton();
+                bts[i].setFont(fonte);
                 bts[i].setText(lojaInventario[i].getNome() + " - R$" + lojaInventario[i].getCusto());
                 bts[i].addActionListener((java.awt.event.ActionEvent evt) -> {
                     comprar(lojaInventario[iFinal], tem, bts[iFinal]);
@@ -426,13 +441,9 @@ public class Interface extends JFrame {
         pack();
     }
 
-    private void botaoDinheiroActionPerformed(java.awt.event.ActionEvent evt) {
+    private void botaoProgramarClique() {
         dinheiro += computador.getClique() * habilidadeAtiva.getPoder();
         atualizarDinheiro();
-        if(!jaVisto.get("Trabalho")){
-            JOptionPane.showMessageDialog(rootPane, "Aqui é sua área de trabalho\nAo clicar dindin se ganha dinheiro!");
-            jaVisto.put("Trabalho", true);
-        }
     }
     
     private void abrirTrocarPeca(ArrayList<Item> inventario, String nome) {
@@ -443,7 +454,7 @@ public class Interface extends JFrame {
         new Gabinete(computador, processadorTem, placaVideoTem, placaMaeTem, ramTem).setVisible(true);
     }
 
-    private void AbasPrincipaisStateChanged(javax.swing.event.ChangeEvent evt) {
+    private void AbasPrincipaisStateChanged() {
         if(gerenciadorAbasPrincipais.getSelectedIndex() == 1 ){
             if (!jaVisto.get("Loja")){
                 JOptionPane.showMessageDialog(rootPane, "Esta é a loja\nAqui você pode comprar itens para melhorar seu Setup!");
@@ -520,12 +531,16 @@ public class Interface extends JFrame {
         return new ImageIcon(ImageIO.read(getClass().getResource("/main/resources/images/" + caminho + ".png")));
     }
 
-    private Item[] carregarItemCSV(String caminho) {
+    private ArrayList<Item> carregarItemCSV(String caminho) {
         // Cria como arraylist pois não sabemos quantos itens terá
         ArrayList<Item> itens = new ArrayList<>();
         
         // Tenta criar o leitor de arquivos
-        try (BufferedReader br = new BufferedReader(new FileReader("/main/resources/" + caminho))) {
+        URL arquivo = getClass().getResource("/main/resources/csvs/" + caminho + ".csv");
+        if (arquivo == null) {
+            return itens;
+        }
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(arquivo.openStream()))) {
             // Continua enquanto tiver uma próxima linha
             String line;
             while ((line = br.readLine()) != null) {
@@ -533,12 +548,12 @@ public class Interface extends JFrame {
                     String[] partes = line.split(";");
                     // Joga um erro caso o não tenha 4 elementos
                     if (partes.length != 4) {
-                        throw new Exception("Tamanho invalido");
+                        throw new ArrayIndexOutOfBoundsException("Tamanho invalido");
                     }
                     // Tenta cria o novo item e adicionar ao ArrayList
                     // caso um dos valores não esteja formatado corretamente irá jogar um erro
-                    itens.add(ConstrutorPecasPadrao.Item(partes[0], Integer.parseInt(partes[1]), Integer.parseInt(partes[2]), partes[3]));
-                } catch (Exception ex) {
+                    itens.add(new Item(partes[0], Integer.parseInt(partes[1]), Integer.parseInt(partes[2]), partes[3]));
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
                     Logger.getLogger(Interface.class.getName()).log(Level.WARNING, "Item invalido", ex);
                 }
             }
@@ -548,12 +563,28 @@ public class Interface extends JFrame {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, "Não foi possível abrir o arquivo " + caminho, ex);
         }
         
-        // Converte o ArraList em array comum antes de retornar
-        Item[] itensArray = new Item[itens.size()];
-        for (int i = 0; i < itens.size(); i++) {
-            itensArray[i] = itens.get(i);
+        return itens;
+    }
+    
+    private Item[] ItemArrayListParaArray(ArrayList<Item> lista) {
+        Item[] itensArray = new Item[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            itensArray[i] = lista.get(i);
         }
         return itensArray;
+    }
+    
+    private Font carregarFonte(String caminho){
+        GraphicsEnvironment ge =  GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font fonteCarregada;
+        try {
+            fonteCarregada = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/main/resources/fonts/" + caminho).openStream());
+            ge.registerFont(fonteCarregada);
+        } catch (IOException | FontFormatException ex) {
+            fonteCarregada = new Font("DejaVu Serif Condensed", 0, 12);
+            Logger.getLogger(Interface.class.getName()).log(Level.WARNING, null, ex);
+        }
+        return fonteCarregada.deriveFont(0, 14);
     }
     
     private void comprar(Item item, ArrayList lista, JButton botao) {
