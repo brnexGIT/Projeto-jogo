@@ -365,6 +365,7 @@ public class Interface extends JFrame {
         // Aba do computador
         abaPC.setLayout(new GridBagLayout());
         abaPC.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 atualizarImagens();
             }
